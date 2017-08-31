@@ -1,0 +1,12 @@
+package: .
+import:
+- package: github.com/ghodss/yaml
+  version: v1.0.0
+- package: k8s.io/api
+  subpackages:
+  - core/v1
+  - extensions/v1beta1
+- package: k8s.io/apimachinery
+  subpackages:
+  - pkg/apis/meta/v1
+  - pkg/util/yaml
