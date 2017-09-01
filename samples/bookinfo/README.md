@@ -21,8 +21,8 @@ with customization for Nginx proxy.
     The above commands launches four microservices and create the gateway ingress resources.
     The reviews microservice has 3 versions: v1, v2, v3
     
-    This script use Mac OSX version of the nginx inject utility which generates sidecar configuration for application.
-    If you are using other OS, please checkout out https://github.com/nginxinc/istio-nginx-inject and build binary for your OS.
+    (Optional) The script "deploy.sh" call Mac OSX version of the nginx inject utility which generates sidecar configuration for application.
+    If you are using other OS, please checkout out https://github.com/nginmesh/istio-nginx-inject and build the binary again.
     
 1.  Confirm all services and pods are correctly defined and running:
 
