@@ -1,0 +1,13 @@
+kind: RouteRule
+metadata:
+  name: my-rule
+  namespace: default
+spec:
+  destination:
+    name: ratings
+  route:
+  - labels:
+      version: v1
+  httpReqTimeout:
+    simpleTimeout:
+      timeout: 10s

@@ -1,0 +1,15 @@
+apiVersion: config.istio.io/v1alpha3
+kind: RouteRule
+metadata:
+  name: ratings-redirect
+spec:
+  destination:
+    name: productpage
+  precedence: 2
+  match:
+    request:
+      headers:
+        uri:
+          exact:  "/productpage"
+  redirect:
+    uri: "/ratings"

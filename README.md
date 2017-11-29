@@ -10,9 +10,11 @@ Combination of Nginx and Istio provides best service mesh for deploying micro-se
 
 ## Production Status
 
-This is the preview version of the Nginx proxy design to run with 0.16 release of Istio.
-Due to arch differences between 0.16 and 0.2 of Istio, some feature such as routing rules and auth are not implemented in the preview; they are under development and will be available in the 0.2 release.
+This version of nginmesh work with with 0.2.12 release of Istio.
+Please see below for Istio features we support.  Nginmesh is not production ready yet.  
 
+
+<TBD>
 
 ## Architecture
 
@@ -26,7 +28,7 @@ The sidecar run NGINX open source version with custom module to interface to Ist
 Please see README.md in samples/bookinfo directory.  
 
 The sample app is copied from Istio project without modification.  
-App deployment is done using custom sidecar inject tool.  Please see below for building tool for your OS.
+We only support deployment using Kubernetes initializer.  
 
 You can use following kubectl snippet to go inside NGNX proxy container.  Running ps show that is is running NGINX that you know and love.
 
@@ -170,24 +172,3 @@ server {
 }
 
 ```
-
-
-
-
-## Build the nginx-inject
-
-If you would like to build the nginx-inject tool used in the demo for injecting containers into Kubernetes yaml files, make sure you have Docker engine and make installed on your system: 
-
-Clone the repo and run one of the following command from this folder to build the tool:
-
-If you use macOS:
-```
-$ make darwin
-```
-
-If you use Linux:
-```
-$ make linux
-```
-
-The tool will be available in the `build` folder.

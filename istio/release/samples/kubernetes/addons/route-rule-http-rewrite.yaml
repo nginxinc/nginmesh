@@ -1,0 +1,18 @@
+kind: RouteRule
+metadata:
+  name: my-rule
+  namespace: default
+spec:
+  destination:
+    name: ratings
+  match:
+    request:
+      headers:
+        uri:
+          prefix: /ratings
+  rewrite:
+    uri: /v1/bookRatings
+  route:
+  - labels:
+      version: v1
+

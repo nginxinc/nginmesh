@@ -1,0 +1,16 @@
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: my-rule
+spec:
+  destination:
+    name: reviews
+  precedence: 1
+  route:
+  - labels:
+      version: v3
+    weight: 100
+  httpReqRetries:
+    simpleRetry:
+      attempts: 3
+      perTryTimeout: 10s
