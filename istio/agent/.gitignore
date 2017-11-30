@@ -1,0 +1,4 @@
+.vscode
+.idea
+build/
+docker-oss/build

@@ -1,0 +1,12 @@
+hash: a77719d75be447ba5030ac62eb4bfb49a200b4749bb05a4a77a6353995bde037
+updated: 2017-11-21T15:13:06.313315758-08:00
+imports:
+- name: github.com/fsnotify/fsnotify
+  version: 629574ca2a5df945712d3079857300b5e4da0236
+- name: github.com/golang/glog
+  version: 44145f04b68cf362d9c4df2182967c2275eaefed
+- name: golang.org/x/sys
+  version: 328643532ee3c60c099171d4ce2cad0ca0354ca9
+  subpackages:
+  - unix
+testImports: []

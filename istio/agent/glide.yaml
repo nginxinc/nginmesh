@@ -1,0 +1,8 @@
+package: github.com/nginmesh/nginx-istio-agent
+import:
+- package: golang.org/x/sys
+  subpackages:
+  - unix
+- package: github.com/fsnotify/fsnotify
+  version: v1.4.2
+- package: github.com/golang/glog
