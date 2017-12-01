@@ -45,4 +45,4 @@ mkdir -p /build/modules
 cp objs/ngx_http_opentracing_module.so objs/ngx_http_zipkin_module.so /build/modules
 
 mkdir -p /build/libs
-cp /usr/local/lib/libopentracing.so.1.2.0 /usr/local/lib/libzipkin.so.0.1.1 /usr/local/lib/libzipkin_opentracing.so.0.1.1 /build/libs 
+cp -L /usr/local/lib/libopentracing.so /usr/local/lib/libzipkin.so /usr/local/lib/libzipkin_opentracing.so /build/libs 
