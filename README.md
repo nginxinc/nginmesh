@@ -1,7 +1,7 @@
 
 # Service Mesh with Istio and NGINX
 
-This repo provides an implementation of sidecar proxy for Istio using NGINX open source version.
+This repository provides an implementation of sidecar proxy for Istio using NGINX open source version.
 
 ## What is Service Mesh and Istio?
 
@@ -10,7 +10,7 @@ Combination of Nginx and Istio provides best service mesh for deploying micro-se
 
 ## Production Status
 
-This version of nginmesh work with with 0.2.12 release of Istio.
+This version of Nginmesh work with with 0.2.12 release of Istio.
 Please see below for Istio features we support.  Nginmesh is not production ready yet.  
 
 
@@ -193,6 +193,6 @@ kubectl get svc  -n istio-system 
 
 [In-Depth Telemetry](https://istio.io/docs/guides/telemetry.html) This sample demonstrates how to obtain uniform metrics, logs, traces across different services using NGiNX sidecar. Additionally, for quick install of telemetry services, please check this [link](istio/release/install/kubernetes/README.md).
 
-[Intelligent Routing](https://istio.io/docs/guides/intelligent-routing.html) Refer to Michael README.md ? Difference in delay with Istio.
+[Intelligent Routing](https://istio.io/docs/guides/intelligent-routing.html)
 
 
