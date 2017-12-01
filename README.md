@@ -191,7 +191,7 @@ kubectl get svc  -n istio-system 
 
 ### Optional: 
 
-[In-Depth Telemetry](https://istio.io/docs/guides/telemetry.html) This sample demonstrates how to obtain uniform metrics, logs, traces across different services using NGiNX sidecar. Additionally, for quick install of telemetry services, please check this [link](https://github.com/nginmesh/nginmesh/blob/release-doc-0.2.12/istio/release/install/kubernetes/README.md).
+[In-Depth Telemetry](https://istio.io/docs/guides/telemetry.html) This sample demonstrates how to obtain uniform metrics, logs, traces across different services using NGiNX sidecar. Additionally, for quick install of telemetry services, please check this [link](istio/release/install/kubernetes/README.md).
 
 [Intelligent Routing](https://istio.io/docs/guides/intelligent-routing.html) Refer to Michael README.md ? Difference in delay with Istio.
 
