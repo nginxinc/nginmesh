@@ -10,7 +10,7 @@ Combination of Nginx and Istio provides best service mesh for deploying micro-se
 
 ## Production Status
 
-This version of Nginmesh work with with 0.2.12 release of Istio.
+This version of Nginmesh work with 0.2.12 release of Istio.
 Please see below for Istio features we support.  Nginmesh is not production ready yet.  
 
 
