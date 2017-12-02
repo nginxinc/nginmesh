@@ -1,7 +1,7 @@
-VERSION=0.2.12-RC2
+VERSION=0.2.12-RC3
 REPO=nginmesh
 USER=nginmesh
-RELEASE_FILE=nginmesh.tar.gz
+RELEASE_FILE=nginmesh-${VERSION}
 
 
 update-install:
@@ -11,16 +11,17 @@ update-install:
 release:	release_tar create_release upload_release
 
 clean_release:  
-	rm -rf target
+	rm -rf ${RELEASE_FILE} ${RELEASE_FILE}.tar.gz
 
 release_tar:    clean_release
-	mkdir -p target
-	cp -r samples target
-	cp -r install target
-	rm -rf target/install/kubernetes/templates
-	rm -rf target/install/kubernetes/.gitignore
-	rm -rf target/install/kubernetes/*.bak
-	cd target;tar -czvf ${RELEASE_FILE} install samples            
+	mkdir -p ${RELEASE_FILE}
+	cp -r samples ${RELEASE_FILE}
+	cp -r install ${RELEASE_FILE}
+	cp -r ../tools ${RELEASE_FILE}
+	rm -rf ${RELEASE_FILE}/install/kubernetes/templates
+	rm -rf ${RELEASE_FILE}/install/kubernetes/.gitignore
+	rm -rf ${RELEASE_FILE}/install/kubernetes/*.bak
+	cd target;tar -czvf ${RELEASE_FILE}.tar.gz ${RELEASE_FILE}
 
 create_release:
 	github-release release \
@@ -35,8 +36,8 @@ upload_release:
     	--user ${USER} \
     	--repo ${REPO} \
     	--tag ${VERSION} \
-    	--name "${RELEASE_FILE}" \
-    	--file target/${RELEASE_FILE}
+    	--name "${RELEASE_FILE}.tar.gz" \
+    	--file ${RELEASE_FILE}.tar.gz
 
 
 

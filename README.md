@@ -43,7 +43,7 @@ curl -L https://git.io/getLatestIstio | ISTIO_VERSION=0.2.12 sh -
 2. Download Nginmesh release 0.2.12, by running below command:
 
 ```
-curl -L https://github.com/nginmesh/nginmesh/releases/download/0.2.12-RC2/nginmesh-0.2.12.tar.gz | tar zx
+curl -L https://github.com/nginmesh/nginmesh/releases/download/0.2.12-RC3/nginmesh-0.2.12-RC3.tar.gz | tar zx
 ```
 
 3. Create Istio deployment without authentication:
@@ -53,7 +53,7 @@ kubectl create -f istio-0.2.12/install/kubernetes/istio.yaml
 
 4. Deploy automatic sidecar injection initializer:
 ```
-kubectl apply -f nginmesh-0.2.12/install/kubernetes/istio-initializer.yaml
+kubectl apply -f nginmesh-0.2.12-RC3/install/kubernetes/istio-initializer.yaml
 ```
 
 5. Ensure the following Kubernetes services are deployed: istio-pilot, istio-mixer, istio-ingress, istio-egress:
@@ -93,7 +93,7 @@ Note: We only support deployment using Kubernetes initializer.
 1. Deploy the application containers:
 
 ```
-kubectl apply -f nginmesh-0.2.12/samples/kubernetes/bookinfo.yaml
+kubectl apply -f nginmesh-0.2.12-RC3/samples/kubernetes/bookinfo.yaml
 ```
 
 2. Confirm all application services are correctly defined and running: productpage, details, reviews,ratings.

@@ -1,4 +1,4 @@
-VERSION = 0.2.12-RC2
+VERSION = 0.2.12-RC3
 NGINX_VER = 1.13.7
 GIT_COMMIT=$(shell git rev-parse --short HEAD)
 SIDECAR_IMAGE_NAME=proxy_debug
@@ -27,6 +27,8 @@ GOLANG_CONTAINER = golang:1.9
 all: helpers dirs modules agent-oss push push-init-container
 
 release: helpers dirs modules agent-oss push push-init-container
+
+debug:	helpers dirs modules agent-oss push push-init-container
 
 dirs: modules-dirs
 	mkdir -p $(BUILD_DIR) 

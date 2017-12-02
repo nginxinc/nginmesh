@@ -20,6 +20,13 @@ modules: tracing-modules
 	wget -N https://github.com/nginmesh/${MIXER_MODULE_PROJ_NAME}/releases/download/${MIXER_VERSION}/${MIXER_MODULE_NAME}.so; \
 	wget -N https://github.com/nginmesh/${DEST_MODULE_PROJ_NAME}/releases/download/${DEST_VERSION}/${DEST_MODULE_NAME}.so
 
+# copy modules from local repo
+modules-local:
+	cd $(BUILD_DIR)/modules; \
+	cp ${MODULE_ROOT_DIR}/${MIXER_MODULE_PROJ_NAME}/module/release/${MIXER_MODULE_NAME}.so .; \
+	cp ${MODULE_ROOT_DIR}/${DEST_MODULE_PROJ_NAME}/module/release/${DEST_MODULE_NAME}.so .; 
+
+
 container-tracing-modules-builder:
 	make BUILDER_IMAGE=$(BUILDER_IMAGE) -C docker-tracing
 
