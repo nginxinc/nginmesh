@@ -63,9 +63,11 @@ server {
 
         mixer_report {{if $location.MixerReport}}on{{else}}off{{end}};
         mixer_check {{if $location.MixerCheck}}on{{else}}off{{end}};
-        
+       
+        {{if $location.Tracing}}
         opentracing_operation_name $host:$server_port;
-        opentracing_trace_locations {{if $location.Tracing}}on{{else}}off{{end}};
+        opentracing_trace_locations off;
+        {{end}}
 
         {{if $location.Redirect}}
         return {{$location.Redirect.Code}} {{$location.Redirect.URL}};

@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/nginmesh/nginx-istio-agent/cmd/agent/pilot"
+	"github.com/nginmesh/nginmesh/istio/agent/pilot"
 )
 
 var vh = pilot.VirtualHost{
