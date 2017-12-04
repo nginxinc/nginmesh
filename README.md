@@ -31,7 +31,7 @@ curl -L https://github.com/nginmesh/nginmesh/releases/download/0.2.12-RC3/nginme
 
 3. Deploy Istio either with or without enabled mutual TLS (mTLS) authentication between sidecars:
 
-a)Install Istio without enabling mTLS:
+a) Install Istio without enabling mTLS:
 ```
 kubectl create -f istio-0.2.12/install/kubernetes/istio.yaml
 ```
@@ -69,7 +69,7 @@ kubectl get pods -n istio-system
   istio-mixer-2104784889-20rm8        2/2       Running   0          5h
 ```
 ### Deploy a Sample Application
-In this section we deploy the Bookinfo application, which is taken from the Istio samples.. Please see [Bookinfo](https://istio.io/docs/guides/bookinfo.html)  for more details.
+In this section we deploy the Bookinfo application, which is taken from the Istio samples. Please see [Bookinfo](https://istio.io/docs/guides/bookinfo.html)  for more details.
 
 1. Deploy the application:
 ```
