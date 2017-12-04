@@ -40,5 +40,5 @@ killall kubectl #-- Remove any kubectl port-forward processes that may be runn
 #  Verify uninstall
 ```
 kubectl get pods -n istio-system #-- Istio pods should be deleted
-kubectl get svc  -n istio-system      #-- Istio services should be deleted
+kubectl get svc  -n istio-system #-- Istio services should be deleted
 ```
