@@ -1,16 +1,18 @@
 # Service Mesh with Istio and NGINX
 This repository provides an implementation of a sidecar proxy based on NGINX for Istio.
 
-# What is Service Mesh and Istio?
+## What is Service Mesh and Istio?
 Please check https://istio.io for a detailed explanation of the service mesh provided by Istio.
 
-# Production Status
+## Production Status
 The current version of nginmesh works with Istio release 0.2.12. It is not suited for production deployments.
 
 ## Architecture
 The diagram below depicts how an NGINX sidecar proxy is implemented. The sidecar runs NGINX with custom modules to interface with Istio Mixer, as well as with third-party modules for tracing.
 
 ![Alt text](/images/nginx_sidecar.png?raw=true "Nginx Sidecar")
+
+To learn more about the sidecar implementation, see [this document](istio/agent).
 
 ## Quick Start
 Below are instructions to setup the Istio service mesh in a Kubernetes cluster using NGINX as a sidecar.
@@ -116,7 +118,7 @@ kubectl get ingress -o wide
 ```
 http://<Public-IP-of-the-Ingress-Controller>/productpage
 ```
-### Uninstalling Application
+### Uninstalling the Application
 1. To uninstall application, run:
 ```
 ./nginmesh-0.2.12-RC3/samples/kubernetes/cleanup.sh 
@@ -143,20 +145,15 @@ kubectl delete -f istio-0.2.12/install/kubernetes/istio-auth.yaml
 kubectl delete -f nginmesh-0.2.12-RC3/install/kubernetes/istio-initializer.yaml
 ```
 
+### Additional Examples
+
+* **In-Depth Telemetry** [This example](https://istio.io/docs/guides/telemetry.html) demonstrates how to obtain uniform metrics, logs, traces across different applications. To run the example, you must install the telemetry services. Please follow the installation instructions from this [document](istio/release/install/kubernetes/README.md).
 
 
-### Limitations
+## Limitations
 nginmesh has the following limitations:
+* TCP and gRCP traffic is not supported.
+* Quota Check is not supported.
+* nginmesh supports only Kubernetes.
 
-TCP and gRCP traffics are not supported.
-
-Quota Check is not supported.
-
-### Optional:
-[In-Depth Telemetry](https://istio.io/docs/guides/telemetry.html) This example demonstrates how to obtain uniform metrics, logs, traces across different services. For quick install of telemetry services, please check this [link](istio/release/install/kubernetes/README.md).
-
-Agent. To learn more about the NGINX sidecar implementation see  [link](istio/release/install/kubernetes/README.md).
-
-
-
-
+All sidecar-related limitations as well as supported traffic management rules are described [here](istio/agent).
