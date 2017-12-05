@@ -147,13 +147,13 @@ kubectl delete -f nginmesh-0.2.12-RC3/install/kubernetes/istio-initializer.yaml
 
 ### Additional Examples
 
-* **In-Depth Telemetry** [This example](https://istio.io/docs/guides/telemetry.html) demonstrates how to obtain uniform metrics, logs, traces across different applications. To run the example, you must install the telemetry services. Please follow the installation instructions from this [document](istio/release/install/kubernetes/README.md).
+* **In-Depth Telemetry** [This example](https://istio.io/docs/guides/telemetry.html) demonstrates how to obtain uniform metrics, logs, traces across different applications. To run the example, you must install the telemetry services. 
 
 
 ## Limitations
 nginmesh has the following limitations:
 * TCP and gRCP traffic is not supported.
 * Quota Check is not supported.
-* nginmesh supports only Kubernetes.
+* Only Kubernetes is supported.
 
 All sidecar-related limitations as well as supported traffic management rules are described [here](istio/agent).

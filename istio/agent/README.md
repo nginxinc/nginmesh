@@ -6,7 +6,7 @@ The NGINX sidecar is implemented using the agent application, which runs alongsi
 
 The agent is an application written in Go. It is deployed within the same container as NGINX. The agent has the following responsibilities:
 1. *Controlling NGINX*, which includes starting/stopping NGINX and applying new configuration (reloading). If NGINX suddenly terminates (crashes), the agent terminates as well.
-1. *Monitoring Pilot for configuration changes.* The agent constantly monitors Pilot for changes in load balancing configuration for the service instance which NGINX belongs too.
+1. *Monitoring Pilot for configuration changes.* The agent constantly monitors Pilot for changes in load balancing configuration for the service instance which NGINX belongs to.
 1. *Converting Pilot (Envoy) configuration to NGINX configuration.* When configuration is updated in Pilot, the agent converts the updated configuration and applies it to NGINX.
 1. *Monitoring the Istio Auth certificates and keys on the file system.* The agent monitors the folder where Istio Auth deploys the certificates and keys which are used for mutual TLS authentication between NGINX proxies. When those files are updated by Istio Auth, the agent reloads NGINX to apply the updates.
 
@@ -52,7 +52,7 @@ Also, you need to have access to a docker registry for uploading docker images.
 
 During the build, the following images are built and uploaded to your docker registry:
 * *proxy_debug*, which comes with the agent and NGINX.
-* *proxy_init*, which is used for configuring IPtables rules for transparently injecting an NGINX proxy from the `proxy_debug` image into an application pod.  
+* *proxy_init*, which is used for configuring iptables rules for transparently injecting an NGINX proxy from the `proxy_debug` image into an application pod.  
 
 Additionally, the `tracing_builder` image is built. It is used during the build for compiling NGINX third-party modules required for tracing. The image is not uploaded to the docker registry. 
 
@@ -62,5 +62,5 @@ $ make clean
 $ make release REPO=<your-docker-repo>
 ```
 
-The `<your-docker-repo>/proxy_debug:<release-tag>` and `<your-docker-repo>/proxy_init:<release-tag>` images will be uploaded to your docker registry. Not that the `<release-tag>` is set in the `Makefile`.
+The `<your-docker-repo>/proxy_debug:<release-tag>` and `<your-docker-repo>/proxy_init:<release-tag>` images will be uploaded to your docker registry. Note that the `<release-tag>` is set in the `Makefile`.
 
