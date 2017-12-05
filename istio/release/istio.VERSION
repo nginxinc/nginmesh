@@ -15,4 +15,4 @@ export PROXY_DEBIAN_URL="https://storage.googleapis.com/istio-release/releases/0
 export FORTIO_HUB="gcr.io/istio-testing"
 export FORTIO_TAG="0.2.7"
 export PROXY_HUB="nginmesh"
-export PROXY_TAG="0.2.12-RC3"
+export PROXY_TAG="0.2.12"

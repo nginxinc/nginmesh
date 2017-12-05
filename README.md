@@ -28,7 +28,7 @@ curl -L https://git.io/getLatestIstio | ISTIO_VERSION=0.2.12 sh -
 ```
 2. Download nginmesh release 0.2.12:
 ```
-curl -L https://github.com/nginmesh/nginmesh/releases/download/0.2.12-RC3/nginmesh-0.2.12-RC3.tar.gz | tar zx
+curl -L https://github.com/nginmesh/nginmesh/releases/download/0.2.12/nginmesh-0.2.12.tar.gz | tar zx
 ```
 
 3. Deploy Istio either with or without enabled mutual TLS (mTLS) authentication between sidecars:
@@ -43,7 +43,7 @@ kubectl create -f istio-0.2.12/install/kubernetes/istio-auth.yaml
 ```
 4. Deploy an initializer for automatic sidecar injection:
 ```
-kubectl apply -f nginmesh-0.2.12-RC3/install/kubernetes/istio-initializer.yaml
+kubectl apply -f nginmesh-0.2.12/install/kubernetes/istio-initializer.yaml
 ```
 
 5. Ensure the following Kubernetes services are deployed: istio-pilot, istio-mixer, istio-ingress, istio-egress:
@@ -75,7 +75,7 @@ In this section we deploy the Bookinfo application, which is taken from the Isti
 
 1. Deploy the application:
 ```
-kubectl apply -f nginmesh-0.2.12-RC3/samples/kubernetes/bookinfo.yaml
+kubectl apply -f nginmesh-0.2.12/samples/kubernetes/bookinfo.yaml
 ```
 
 2. Confirm that all application services are deployed: productpage, details, reviews, ratings.
@@ -121,7 +121,7 @@ http://<Public-IP-of-the-Ingress-Controller>/productpage
 ### Uninstalling the Application
 1. To uninstall application, run:
 ```
-./nginmesh-0.2.12-RC3/samples/kubernetes/cleanup.sh 
+./nginmesh-0.2.12/samples/kubernetes/cleanup.sh 
 ```
 
 
@@ -142,7 +142,7 @@ kubectl delete -f istio-0.2.12/install/kubernetes/istio-auth.yaml
 
 2. To uninstall the initializer, run:
 ```
-kubectl delete -f nginmesh-0.2.12-RC3/install/kubernetes/istio-initializer.yaml
+kubectl delete -f nginmesh-0.2.12/install/kubernetes/istio-initializer.yaml
 ```
 
 ### Additional Examples

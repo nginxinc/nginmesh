@@ -1,4 +1,4 @@
-VERSION=0.2.12-RC3
+VERSION=0.2.12
 REPO=nginmesh
 USER=nginmesh
 RELEASE_FILE=nginmesh-${VERSION}
@@ -28,8 +28,7 @@ create_release:
     --user ${USER} \
     --repo ${REPO} \
     --tag ${VERSION} \
-    --name "${VERSION}" \
-    --pre-release
+    --name "${VERSION}"
 
 upload_release:
 	github-release upload \
