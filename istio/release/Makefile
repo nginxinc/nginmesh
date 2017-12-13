@@ -1,4 +1,4 @@
-VERSION=0.2.12
+VERSION=0.3.0
 REPO=nginmesh
 USER=nginmesh
 RELEASE_FILE=nginmesh-${VERSION}
@@ -28,7 +28,8 @@ create_release:
     --user ${USER} \
     --repo ${REPO} \
     --tag ${VERSION} \
-    --name "${VERSION}"
+	--name "${VERSION}" \
+    --description "[RELEASE NOTE](https://github.com/nginmesh/nginmesh/wiki/v${VERSION})"
 
 upload_release:
 	github-release upload \

@@ -5,7 +5,7 @@ This repository provides an implementation of a sidecar proxy based on NGINX for
 Please check https://istio.io for a detailed explanation of the service mesh provided by Istio.
 
 ## Production Status
-The current version of nginmesh works with Istio release 0.2.12. It is not suited for production deployments.
+The current version of nginmesh works with Istio release 0.3.0. It is not suited for production deployments.
 
 ## Architecture
 The diagram below depicts how an NGINX sidecar proxy is implemented. The sidecar runs NGINX with custom modules to interface with Istio Mixer, as well as with third-party modules for tracing.
@@ -22,28 +22,28 @@ Make sure you have a Kubernetes cluster with alpha feature enabled. Please see [
 
 ### Installing Istio and nginmesh
 Below are instructions for installing Istio with NGINX as a sidecar:
-1. Download Istio release 0.2.12:
+1. Download Istio release 0.3.0:
 ```
-curl -L https://git.io/getLatestIstio | ISTIO_VERSION=0.2.12 sh -
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=0.3.0 sh -
 ```
-2. Download nginmesh release 0.2.12:
+2. Download nginmesh release 0.3.0:
 ```
-curl -L https://github.com/nginmesh/nginmesh/releases/download/0.2.12/nginmesh-0.2.12.tar.gz | tar zx
+curl -L https://github.com/nginmesh/nginmesh/releases/download/0.3.0/nginmesh-0.3.0.tar.gz | tar zx
 ```
 
 3. Deploy Istio either with or without enabled mutual TLS (mTLS) authentication between sidecars:
 
 a) Install Istio without enabling mTLS:
 ```
-kubectl create -f istio-0.2.12/install/kubernetes/istio.yaml
+kubectl create -f istio-0.3.0/install/kubernetes/istio.yaml
 ```
 b) Install Istio with mTLS:
 ```
-kubectl create -f istio-0.2.12/install/kubernetes/istio-auth.yaml
+kubectl create -f istio-0.3.0/install/kubernetes/istio-auth.yaml
 ```
 4. Deploy an initializer for automatic sidecar injection:
 ```
-kubectl apply -f nginmesh-0.2.12/install/kubernetes/istio-initializer.yaml
+kubectl apply -f nginmesh-0.3.0/install/kubernetes/istio-initializer.yaml
 ```
 
 5. Ensure the following Kubernetes services are deployed: istio-pilot, istio-mixer, istio-ingress, istio-egress:
@@ -75,7 +75,7 @@ In this section we deploy the Bookinfo application, which is taken from the Isti
 
 1. Deploy the application:
 ```
-kubectl apply -f nginmesh-0.2.12/samples/kubernetes/bookinfo.yaml
+kubectl apply -f nginmesh-0.3.0/samples/kubernetes/bookinfo.yaml
 ```
 
 2. Confirm that all application services are deployed: productpage, details, reviews, ratings.
@@ -121,7 +121,7 @@ http://<Public-IP-of-the-Ingress-Controller>/productpage
 ### Uninstalling the Application
 1. To uninstall application, run:
 ```
-./nginmesh-0.2.12/samples/kubernetes/cleanup.sh 
+./nginmesh-0.3.0/samples/kubernetes/cleanup.sh 
 ```
 
 
@@ -130,19 +130,19 @@ http://<Public-IP-of-the-Ingress-Controller>/productpage
 
 a) If mTLS is disabled:
 ```
-kubectl delete -f istio-0.2.12/install/kubernetes/istio.yaml
+kubectl delete -f istio-0.3.0/install/kubernetes/istio.yaml
 ```
 
 OR:
 
 b) If mTLS is enabled:
 ```
-kubectl delete -f istio-0.2.12/install/kubernetes/istio-auth.yaml
+kubectl delete -f istio-0.3.0/install/kubernetes/istio-auth.yaml
 ```
 
 2. To uninstall the initializer, run:
 ```
-kubectl delete -f nginmesh-0.2.12/install/kubernetes/istio-initializer.yaml
+kubectl delete -f nginmesh-0.3.0/install/kubernetes/istio-initializer.yaml
 ```
 
 ### Additional Examples

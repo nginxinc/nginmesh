@@ -52,7 +52,7 @@ spec:
       serviceAccountName: istio-initializer-service-account
       containers:
         - name: initializer
-          image: docker.io/istio/sidecar_initializer:0.2.12
+          image: docker.io/istio/sidecar_initializer:0.3.0
           imagePullPolicy: IfNotPresent
           args:
             - --port=8083
