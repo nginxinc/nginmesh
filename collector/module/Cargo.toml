@@ -1,0 +1,14 @@
+[workspace]
+members = [
+    "collector-ngx",
+    "collector-transport",
+    "collector-tests"
+]
+
+exclude = [
+    "build"
+]
+
+
+[profile.release]
+lto = true

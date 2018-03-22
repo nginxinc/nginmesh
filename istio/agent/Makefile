@@ -1,4 +1,4 @@
-VERSION = 0.3.0-alpha
+VERSION = 0.6.0-alpha
 NGINX_VER = 1.13.7
 GIT_COMMIT=$(shell git rev-parse --short HEAD)
 SIDECAR_IMAGE_NAME=proxy_debug
@@ -41,6 +41,10 @@ ifeq ($(BUILD_IN_CONTAINER),1)
 else
 	GOOS=linux go build -o $(BUILD_DIR)/agent cmd/agent/*.go
 endif
+
+agent-test:
+	go test pilot/*.go -v
+	go test nginx/*.go -v
 
 container-oss:
 	cp -r $(BUILD_DIR) docker-oss

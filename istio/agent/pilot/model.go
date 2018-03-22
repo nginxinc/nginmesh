@@ -799,15 +799,46 @@ type KeyAndService struct {
 	Hosts []*ServiceHost `json:"hosts"`
 }
 
+type BytesValue struct {
+	BytesValue	string	`json:"bytesValue,omitempty"`
+}
+
+
+
+type StringValue struct {
+	StringValue	string	`json:"stringValue,omitempty"`
+}
+
+
+
+
+type Attributes struct {
+	SourceIp 		*BytesValue 	`json:"source.ip,omitempty"`
+	SourceUid 		*StringValue 	`json:"source.uid,omitempty"`
+	DestinationIp 	*BytesValue 	`json:"destination.ip,omitempty"`
+	DestinationUid *StringValue 	`json:"destination.uid,omitempty"`
+	DestinationService *StringValue 	`json:"destination.service,omitempty"`
+}
+
+type AttributeConfig struct {
+	Attributes *Attributes `json:"attributes,omitempty"`
+}
+
+
 // FilterMixerConfig definition
+type FilterMixerV2Config struct {
+
+	V2  *FilterMixerConfig `json:"v2"`
+}
+
 type FilterMixerConfig struct {
 	// MixerAttributes specifies the static list of attributes that are sent with
 	// each request to Mixer.
-	MixerAttributes map[string]string `json:"mixer_attributes,omitempty"`
+	MixerAttributes *AttributeConfig `json:"mixerAttributes"`
 
 	// ForwardAttributes specifies the list of attribute keys and values that
 	// are forwarded as an HTTP header to the server side proxy
-	ForwardAttributes map[string]string `json:"forward_attributes,omitempty"`
+	ForwardAttributes *AttributeConfig `json:"forwardAttributes"`
 
 	// QuotaName specifies the name of the quota bucket to withdraw tokens from;
 	// an empty name means no quota will be charged.

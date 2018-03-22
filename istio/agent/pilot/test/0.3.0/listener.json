@@ -1,0 +1,775 @@
+{
+  "listeners": [
+   {
+    "address": "tcp://0.0.0.0:15001",
+    "name": "virtual",
+    "filters": [],
+    "bind_to_port": true,
+    "use_original_dst": true
+   },
+   {
+    "address": "tcp://0.0.0.0:15003",
+    "name": "http_0.0.0.0_15003",
+    "filters": [
+     {
+      "type": "read",
+      "name": "http_connection_manager",
+      "config": {
+       "codec_type": "auto",
+       "stat_prefix": "http",
+       "generate_request_id": true,
+       "tracing": {
+        "operation_name": "egress"
+       },
+       "rds": {
+        "cluster": "rds",
+        "route_config_name": "15003",
+        "refresh_delay_ms": 1000
+       },
+       "filters": [
+        {
+         "type": "decoder",
+         "name": "mixer",
+         "config": {
+          "mixer_attributes": {
+           "destination.ip": "10.40.1.19",
+           "destination.service": "productpage.default.svc.cluster.local",
+           "destination.uid": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+          },
+          "forward_attributes": {
+           "source.ip": "10.40.1.19",
+           "source.uid": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+          },
+          "quota_name": "RequestCount",
+          "v2": {
+           "defaultDestinationService": "productpage.default.svc.cluster.local",
+           "forwardAttributes": {
+            "attributes": {
+             "source.ip": {
+              "bytesValue": "AAAAAAAAAAAAAP//CigBEw=="
+             },
+             "source.uid": {
+              "stringValue": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+             }
+            }
+           },
+           "mixerAttributes": {
+            "attributes": {
+             "destination.ip": {
+              "bytesValue": "AAAAAAAAAAAAAP//CigBEw=="
+             },
+             "destination.uid": {
+              "stringValue": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+             }
+            }
+           },
+           "serviceConfigs": {
+            "productpage.default.svc.cluster.local": {
+             "mixerAttributes": {
+              "attributes": {
+               "destination.service": {
+                "stringValue": "productpage.default.svc.cluster.local"
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        },
+        {
+         "type": "",
+         "name": "cors",
+         "config": {}
+        },
+        {
+         "type": "decoder",
+         "name": "router",
+         "config": {}
+        }
+       ],
+       "access_log": [
+        {
+         "path": "/dev/stdout"
+        }
+       ]
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://0.0.0.0:80",
+    "name": "http_0.0.0.0_80",
+    "filters": [
+     {
+      "type": "read",
+      "name": "http_connection_manager",
+      "config": {
+       "codec_type": "auto",
+       "stat_prefix": "http",
+       "generate_request_id": true,
+       "tracing": {
+        "operation_name": "egress"
+       },
+       "rds": {
+        "cluster": "rds",
+        "route_config_name": "80",
+        "refresh_delay_ms": 1000
+       },
+       "filters": [
+        {
+         "type": "decoder",
+         "name": "mixer",
+         "config": {
+          "mixer_attributes": {
+           "destination.ip": "10.40.1.19",
+           "destination.service": "productpage.default.svc.cluster.local",
+           "destination.uid": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+          },
+          "forward_attributes": {
+           "source.ip": "10.40.1.19",
+           "source.uid": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+          },
+          "quota_name": "RequestCount",
+          "v2": {
+           "defaultDestinationService": "productpage.default.svc.cluster.local",
+           "forwardAttributes": {
+            "attributes": {
+             "source.ip": {
+              "bytesValue": "AAAAAAAAAAAAAP//CigBEw=="
+             },
+             "source.uid": {
+              "stringValue": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+             }
+            }
+           },
+           "mixerAttributes": {
+            "attributes": {
+             "destination.ip": {
+              "bytesValue": "AAAAAAAAAAAAAP//CigBEw=="
+             },
+             "destination.uid": {
+              "stringValue": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+             }
+            }
+           },
+           "serviceConfigs": {
+            "productpage.default.svc.cluster.local": {
+             "mixerAttributes": {
+              "attributes": {
+               "destination.service": {
+                "stringValue": "productpage.default.svc.cluster.local"
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        },
+        {
+         "type": "",
+         "name": "cors",
+         "config": {}
+        },
+        {
+         "type": "decoder",
+         "name": "router",
+         "config": {}
+        }
+       ],
+       "access_log": [
+        {
+         "path": "/dev/stdout"
+        }
+       ]
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://0.0.0.0:9080",
+    "name": "http_0.0.0.0_9080",
+    "filters": [
+     {
+      "type": "read",
+      "name": "http_connection_manager",
+      "config": {
+       "codec_type": "auto",
+       "stat_prefix": "http",
+       "generate_request_id": true,
+       "tracing": {
+        "operation_name": "egress"
+       },
+       "rds": {
+        "cluster": "rds",
+        "route_config_name": "9080",
+        "refresh_delay_ms": 1000
+       },
+       "filters": [
+        {
+         "type": "decoder",
+         "name": "mixer",
+         "config": {
+          "mixer_attributes": {
+           "destination.ip": "10.40.1.19",
+           "destination.service": "productpage.default.svc.cluster.local",
+           "destination.uid": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+          },
+          "forward_attributes": {
+           "source.ip": "10.40.1.19",
+           "source.uid": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+          },
+          "quota_name": "RequestCount",
+          "v2": {
+           "defaultDestinationService": "productpage.default.svc.cluster.local",
+           "forwardAttributes": {
+            "attributes": {
+             "source.ip": {
+              "bytesValue": "AAAAAAAAAAAAAP//CigBEw=="
+             },
+             "source.uid": {
+              "stringValue": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+             }
+            }
+           },
+           "mixerAttributes": {
+            "attributes": {
+             "destination.ip": {
+              "bytesValue": "AAAAAAAAAAAAAP//CigBEw=="
+             },
+             "destination.uid": {
+              "stringValue": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+             }
+            }
+           },
+           "serviceConfigs": {
+            "productpage.default.svc.cluster.local": {
+             "mixerAttributes": {
+              "attributes": {
+               "destination.service": {
+                "stringValue": "productpage.default.svc.cluster.local"
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        },
+        {
+         "type": "",
+         "name": "cors",
+         "config": {}
+        },
+        {
+         "type": "decoder",
+         "name": "router",
+         "config": {}
+        }
+       ],
+       "access_log": [
+        {
+         "path": "/dev/stdout"
+        }
+       ]
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://0.0.0.0:9093",
+    "name": "http_0.0.0.0_9093",
+    "filters": [
+     {
+      "type": "read",
+      "name": "http_connection_manager",
+      "config": {
+       "codec_type": "auto",
+       "stat_prefix": "http",
+       "generate_request_id": true,
+       "tracing": {
+        "operation_name": "egress"
+       },
+       "rds": {
+        "cluster": "rds",
+        "route_config_name": "9093",
+        "refresh_delay_ms": 1000
+       },
+       "filters": [
+        {
+         "type": "decoder",
+         "name": "mixer",
+         "config": {
+          "mixer_attributes": {
+           "destination.ip": "10.40.1.19",
+           "destination.service": "productpage.default.svc.cluster.local",
+           "destination.uid": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+          },
+          "forward_attributes": {
+           "source.ip": "10.40.1.19",
+           "source.uid": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+          },
+          "quota_name": "RequestCount",
+          "v2": {
+           "defaultDestinationService": "productpage.default.svc.cluster.local",
+           "forwardAttributes": {
+            "attributes": {
+             "source.ip": {
+              "bytesValue": "AAAAAAAAAAAAAP//CigBEw=="
+             },
+             "source.uid": {
+              "stringValue": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+             }
+            }
+           },
+           "mixerAttributes": {
+            "attributes": {
+             "destination.ip": {
+              "bytesValue": "AAAAAAAAAAAAAP//CigBEw=="
+             },
+             "destination.uid": {
+              "stringValue": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+             }
+            }
+           },
+           "serviceConfigs": {
+            "productpage.default.svc.cluster.local": {
+             "mixerAttributes": {
+              "attributes": {
+               "destination.service": {
+                "stringValue": "productpage.default.svc.cluster.local"
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        },
+        {
+         "type": "",
+         "name": "cors",
+         "config": {}
+        },
+        {
+         "type": "decoder",
+         "name": "router",
+         "config": {}
+        }
+       ],
+       "access_log": [
+        {
+         "path": "/dev/stdout"
+        }
+       ]
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://10.40.1.19:9080",
+    "name": "http_10.40.1.19_9080",
+    "filters": [
+     {
+      "type": "read",
+      "name": "http_connection_manager",
+      "config": {
+       "codec_type": "auto",
+       "stat_prefix": "http",
+       "generate_request_id": true,
+       "tracing": {
+        "operation_name": "ingress"
+       },
+       "route_config": {
+        "virtual_hosts": [
+         {
+          "name": "inbound|9080",
+          "domains": [
+           "*"
+          ],
+          "routes": [
+           {
+            "prefix": "/",
+            "cluster": "in.9080",
+            "timeout_ms": 0,
+            "opaque_config": {
+             "destination.service": "productpage.default.svc.cluster.local",
+             "mixer_check": "on",
+             "mixer_forward": "off",
+             "mixer_report": "on"
+            },
+            "decorator": {
+             "operation": "default-route"
+            }
+           }
+          ]
+         }
+        ]
+       },
+       "filters": [
+        {
+         "type": "decoder",
+         "name": "mixer",
+         "config": {
+          "mixer_attributes": {
+           "destination.ip": "10.40.1.19",
+           "destination.service": "productpage.default.svc.cluster.local",
+           "destination.uid": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+          },
+          "forward_attributes": {
+           "source.ip": "10.40.1.19",
+           "source.uid": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+          },
+          "quota_name": "RequestCount",
+          "v2": {
+           "defaultDestinationService": "productpage.default.svc.cluster.local",
+           "forwardAttributes": {
+            "attributes": {
+             "source.ip": {
+              "bytesValue": "AAAAAAAAAAAAAP//CigBEw=="
+             },
+             "source.uid": {
+              "stringValue": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+             }
+            }
+           },
+           "mixerAttributes": {
+            "attributes": {
+             "destination.ip": {
+              "bytesValue": "AAAAAAAAAAAAAP//CigBEw=="
+             },
+             "destination.uid": {
+              "stringValue": "kubernetes://productpage-v1-5fb67b856-6r5f2.default"
+             }
+            }
+           },
+           "serviceConfigs": {
+            "productpage.default.svc.cluster.local": {
+             "mixerAttributes": {
+              "attributes": {
+               "destination.service": {
+                "stringValue": "productpage.default.svc.cluster.local"
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        },
+        {
+         "type": "",
+         "name": "cors",
+         "config": {}
+        },
+        {
+         "type": "decoder",
+         "name": "router",
+         "config": {}
+        }
+       ],
+       "access_log": [
+        {
+         "path": "/dev/stdout"
+        }
+       ]
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://10.43.240.10:53",
+    "name": "tcp_10.43.240.10_53",
+    "filters": [
+     {
+      "type": "read",
+      "name": "tcp_proxy",
+      "config": {
+       "stat_prefix": "tcp",
+       "route_config": {
+        "routes": [
+         {
+          "cluster": "out.kube-dns.kube-system.svc.cluster.local|dns-tcp",
+          "destination_ip_list": [
+           "10.43.240.10/32"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://10.43.240.1:443",
+    "name": "tcp_10.43.240.1_443",
+    "filters": [
+     {
+      "type": "read",
+      "name": "tcp_proxy",
+      "config": {
+       "stat_prefix": "tcp",
+       "route_config": {
+        "routes": [
+         {
+          "cluster": "out.kubernetes.default.svc.cluster.local|https",
+          "destination_ip_list": [
+           "10.43.240.1/32"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://10.43.244.165:15004",
+    "name": "tcp_10.43.244.165_15004",
+    "filters": [
+     {
+      "type": "read",
+      "name": "tcp_proxy",
+      "config": {
+       "stat_prefix": "tcp",
+       "route_config": {
+        "routes": [
+         {
+          "cluster": "out.istio-mixer.istio-system.svc.cluster.local|tcp-mtls",
+          "destination_ip_list": [
+           "10.43.244.165/32"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://10.43.244.165:42422",
+    "name": "tcp_10.43.244.165_42422",
+    "filters": [
+     {
+      "type": "read",
+      "name": "tcp_proxy",
+      "config": {
+       "stat_prefix": "tcp",
+       "route_config": {
+        "routes": [
+         {
+          "cluster": "out.istio-mixer.istio-system.svc.cluster.local|prometheus",
+          "destination_ip_list": [
+           "10.43.244.165/32"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://10.43.244.165:9091",
+    "name": "tcp_10.43.244.165_9091",
+    "filters": [
+     {
+      "type": "read",
+      "name": "tcp_proxy",
+      "config": {
+       "stat_prefix": "tcp",
+       "route_config": {
+        "routes": [
+         {
+          "cluster": "out.istio-mixer.istio-system.svc.cluster.local|tcp-plain",
+          "destination_ip_list": [
+           "10.43.244.165/32"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://10.43.244.165:9094",
+    "name": "tcp_10.43.244.165_9094",
+    "filters": [
+     {
+      "type": "read",
+      "name": "tcp_proxy",
+      "config": {
+       "stat_prefix": "tcp",
+       "route_config": {
+        "routes": [
+         {
+          "cluster": "out.istio-mixer.istio-system.svc.cluster.local|configapi",
+          "destination_ip_list": [
+           "10.43.244.165/32"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://10.43.244.165:9102",
+    "name": "tcp_10.43.244.165_9102",
+    "filters": [
+     {
+      "type": "read",
+      "name": "tcp_proxy",
+      "config": {
+       "stat_prefix": "tcp",
+       "route_config": {
+        "routes": [
+         {
+          "cluster": "out.istio-mixer.istio-system.svc.cluster.local|statsd-prom",
+          "destination_ip_list": [
+           "10.43.244.165/32"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://10.43.244.191:80",
+    "name": "tcp_10.43.244.191_80",
+    "filters": [
+     {
+      "type": "read",
+      "name": "tcp_proxy",
+      "config": {
+       "stat_prefix": "tcp",
+       "route_config": {
+        "routes": [
+         {
+          "cluster": "out.heapster.kube-system.svc.cluster.local",
+          "destination_ip_list": [
+           "10.43.244.191/32"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://10.43.245.207:443",
+    "name": "tcp_10.43.245.207_443",
+    "filters": [
+     {
+      "type": "read",
+      "name": "tcp_proxy",
+      "config": {
+       "stat_prefix": "tcp",
+       "route_config": {
+        "routes": [
+         {
+          "cluster": "out.metrics-server.kube-system.svc.cluster.local",
+          "destination_ip_list": [
+           "10.43.245.207/32"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://10.43.248.129:443",
+    "name": "tcp_10.43.248.129_443",
+    "filters": [
+     {
+      "type": "read",
+      "name": "tcp_proxy",
+      "config": {
+       "stat_prefix": "tcp",
+       "route_config": {
+        "routes": [
+         {
+          "cluster": "out.kubernetes-dashboard.kube-system.svc.cluster.local",
+          "destination_ip_list": [
+           "10.43.248.129/32"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://10.43.254.109:443",
+    "name": "tcp_10.43.254.109_443",
+    "filters": [
+     {
+      "type": "read",
+      "name": "tcp_proxy",
+      "config": {
+       "stat_prefix": "tcp",
+       "route_config": {
+        "routes": [
+         {
+          "cluster": "out.istio-ingress.istio-system.svc.cluster.local|https",
+          "destination_ip_list": [
+           "10.43.254.109/32"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "bind_to_port": false
+   },
+   {
+    "address": "tcp://10.43.254.176:443",
+    "name": "tcp_10.43.254.176_443",
+    "filters": [
+     {
+      "type": "read",
+      "name": "tcp_proxy",
+      "config": {
+       "stat_prefix": "tcp",
+       "route_config": {
+        "routes": [
+         {
+          "cluster": "out.istio-pilot.istio-system.svc.cluster.local|admission-webhook",
+          "destination_ip_list": [
+           "10.43.254.176/32"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "bind_to_port": false
+   }
+  ]
+ }

@@ -1,139 +1,120 @@
 package pilot
 
 import (
-	"encoding/json"
 	"testing"
+	"io/ioutil"
+	"fmt"
+	"os"
 )
 
-var listeners = []byte(`{
-	"listeners": [
-	 {
-	  "address": "tcp://0.0.0.0:15001",
-	  "name": "virtual",
-	  "filters": [],
-	  "bind_to_port": true,
-	  "use_original_dst": true
-	 },
-	 {
-	  "address": "tcp://10.23.250.12:80",
-	  "name": "tcp_10.23.250.12_80",
-	  "filters": [
-	   {
-		"type": "read",
-		"name": "tcp_proxy",
-		"config": {
-		 "stat_prefix": "tcp",
-		 "route_config": {
-		  "routes": [
-		   {
-			"cluster": "out.bffcf45bb7cf7eacfc01ecd666ddac27979567c5",
-			"destination_ip_list": [
-			 "10.23.250.12/32"
-			]
-		   }
-		  ]
-		 }
-		}
-	   }
-	  ],
-	  "bind_to_port": false
-	 },
-	 {
-		"address": "tcp://0.0.0.0:8080",
-		"name": "http_0.0.0.0_8080",
-		"filters": [
-		 {
-		  "type": "read",
-		  "name": "http_connection_manager",
-		  "config": {
-		   "codec_type": "auto",
-		   "stat_prefix": "http",
-		   "generate_request_id": true,
-		   "tracing": {
-			"operation_name": "ingress"
-		   },
-		   "rds": {
-			"cluster": "rds",
-			"route_config_name": "8080",
-			"refresh_delay_ms": 30000
-		   },
-		   "filters": [
-			{
-			 "type": "decoder",
-			 "name": "mixer",
-			 "config": {
-			  "mixer_attributes": {
-			   "destination.ip": "10.20.2.13",
-			   "destination.uid": "kubernetes://productpage"
-			  },
-			  "forward_attributes": {
-			   "source.ip": "10.20.2.13",
-			   "source.uid": "kubernetes://productpage"
-			  },
-			  "quota_name": "RequestCount"
-			 }
-			},
-			{
-				"type": "decoder",
-				"name": "fault",
-				"config": {
-				 "abort": {
-				  "abort_percent": 10,
-				  "http_status": 400
-				 },
-				 "upstream_cluster": "out.8046187fa0ebd79882fa2d601888ca7b89aa7c37"
-				}
-			},
-			{
-				"type": "decoder",
-				"name": "fault",
-				"config": {
-				 "abort": {
-				  "abort_percent": 90,
-				  "http_status": 400
-				 },
-				 "upstream_cluster": "out.8046187fa0ebd79882fa2d601888ca7b89aa7c37"
-				}
-			},
-			{
-			 "type": "decoder",
-			 "name": "router",
-			 "config": {}
-			}
-		   ],
-		   "access_log": [
-			{
-			 "path": "/dev/stdout"
-			}
-		   ]
-		  }
-		 }
-		],
-		"bind_to_port": false
-	   }
-	]
-   }`)
 
 func TestUnmarshal(t *testing.T) {
-	var res ldsResponse
-	err := json.Unmarshal(listeners, &res)
+
+	pwd, _ := os.Getwd()
+	body, ferr := ioutil.ReadFile(pwd+"/test/0.3.0/listener.json")
+	if ferr != nil {
+		fmt.Printf("could not load file")
+		t.Error(ferr)
+		return
+	}
+
+
+	listeners, err := unMarshalListeners(body)
 	if err != nil {
 		t.Error(err)
 	}
-	err = finishUnmarshallingListeners(res.Listeners)
-	if err != nil {
-		t.Error(err)
+
+	if len(listeners) !=18 {
+		t.Error("there should been 18 listener founded")
 	}
-	if res.Listeners[1].Filters[0].TCPProxyFilterConfig == nil {
+
+	for _, listener := range listeners {
+		if listener.Address == "tcp://10.40.1.19:9080" {
+			
+			filters := listener.Filters
+			if len(filters) == 0  {
+				t.Error("no filter founded")
+				return
+			}
+
+			filter := filters[0]
+			httpFilterConfig := filter.HTTPFilterConfig
+			tcpFilterConfig := filter.TCPProxyFilterConfig
+
+			if httpFilterConfig == nil  {
+				t.Error("no http filter detected")
+				return
+			}
+
+			if tcpFilterConfig != nil  {
+				t.Error("wrong tcp filter")
+			}
+
+			httpFilters := httpFilterConfig.Filters
+
+			if len(httpFilters) == 0 {
+				t.Error("no http filter conf founded")
+			}
+
+			httpFilter := httpFilters[0]
+
+			if httpFilter.FilterMixerConfig == nil {
+				t.Error("no mixer config founded")
+			}
+
+			mixerConfig := httpFilter.FilterMixerConfig
+
+			if mixerConfig.MixerAttributes == nil {
+				t.Error("no mixer attributes founded")
+			}
+
+			if mixerConfig.ForwardAttributes == nil {
+				t.Error("no mixer forward attributes founded")
+			}
+
+			mixerAttributres := mixerConfig.MixerAttributes
+			if mixerAttributres.Attributes == nil {
+				t.Error("no attributes for mixer attributes founded")
+			}
+
+			mixerAttributeDetail := mixerAttributres.Attributes
+
+			if mixerAttributeDetail.DestinationIp == nil {
+				t.Error("no destination ip founded")
+			}
+
+			if mixerAttributeDetail.DestinationIp.BytesValue != "AAAAAAAAAAAAAP//CigBEw==" {
+				t.Error("destination ip not same")
+			}
+
+			if mixerAttributeDetail.DestinationUid == nil {
+				t.Error("no destination Uid founded")
+			}
+
+			if mixerAttributeDetail.DestinationUid.StringValue != "kubernetes://productpage-v1-5fb67b856-6r5f2.default" {
+				t.Error("destination uid not same")
+			}
+		
+			return
+		}
+
+
+	}
+
+	t.Error("no listener 10.40.1.19:9080 founded")
+	
+	/*
+	if listeners[1].Filters[0].TCPProxyFilterConfig == nil {
 		t.Error("TCPProxyFilterConfig is nil for the tcp filter")
 	}
-	if res.Listeners[2].Filters[0].HTTPFilterConfig == nil {
+	if listeners[2].Filters[0].HTTPFilterConfig == nil {
 		t.Error("HTTPFilterConfig is nil for the http filter")
 	}
-	if filter := res.Listeners[2].Filters[0].HTTPFilterConfig.Filters[0]; filter.FilterMixerConfig == nil {
+	if filter := listeners[2].Filters[0].HTTPFilterConfig.Filters[0]; filter.FilterMixerConfig == nil {
 		t.Errorf("FilterMixerConfig is nil in %v", filter)
 	}
-	if filter := res.Listeners[2].Filters[0].HTTPFilterConfig.Filters[1]; filter.FilterFaultConfig == nil {
+	if filter := listeners[2].Filters[0].HTTPFilterConfig.Filters[1]; filter.FilterFaultConfig == nil {
 		t.Errorf("FilterMixerConfig is nil in %v", filter)
 	}
+	*/
 }

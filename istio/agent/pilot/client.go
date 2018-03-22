@@ -18,6 +18,8 @@ type Client struct {
 	serviceCluster string
 	serviceNode    string
 	podIP          string
+	collectorAddress	string
+	collectorTopic string
 }
 
 // ProxyConfig represents full load balancing configuration for a sidecar proxy.
@@ -31,12 +33,14 @@ type ProxyConfig struct {
 }
 
 // NewClient creates a new Client.
-func NewClient(endpoint string, httpClient *http.Client, serviceNode string, serviceCluster string, podIP string) *Client {
-	return &Client{fmt.Sprintf("http://%v", endpoint), httpClient, serviceNode, serviceCluster, podIP}
+func NewClient(endpoint string, httpClient *http.Client, serviceNode string, serviceCluster string, podIP string,
+	collectorAddress string,collectorTopic string) *Client {
+	return &Client{fmt.Sprintf("http://%v", endpoint), httpClient, serviceNode, serviceCluster, podIP,collectorAddress,collectorTopic}
 }
 
 func (c *Client) getListeners() (Listeners, error) {
 	url := fmt.Sprintf("%v/v1/listeners/%v/%v", c.endpoint, c.serviceCluster, c.serviceNode)
+	glog.Infof("listener url: %v", url)
 	resp, err := c.httpClient.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't get listeners: %v", err)
@@ -49,10 +53,16 @@ func (c *Client) getListeners() (Listeners, error) {
 	if glog.V(3) {
 		glog.Infof("Response from %v: %v", url, string(body))
 	}
+	//glog.Infof("Response from %v: %v", url, string(body))
+
+	return unMarshalListeners(body)
+}
+
+func unMarshalListeners(body []byte)  (Listeners, error)  {
 
 	var res ldsResponse
 
-	err = json.Unmarshal(body, &res)
+	err := json.Unmarshal(body, &res)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't unmarshal response from pilot: %v", err)
 	}
@@ -64,6 +74,7 @@ func (c *Client) getListeners() (Listeners, error) {
 
 	return res.Listeners, nil
 }
+
 
 func (c *Client) getHTTPRouteConfig(name string) (*HTTPRouteConfig, error) {
 	url := fmt.Sprintf("%v/v1/routes/%v/%v/%v", c.endpoint, name, c.serviceCluster, c.serviceNode)
@@ -161,12 +172,13 @@ func finishUnmarshallingListeners(listeners Listeners) error {
 
 			for i := range httpConfig.Filters {
 				if httpConfig.Filters[i].Type == "decoder" && httpConfig.Filters[i].Name == "mixer" {
-					var mixerConfig FilterMixerConfig
+					var mixerConfig FilterMixerV2Config
 					err = json.Unmarshal(httpConfig.Filters[i].Config, &mixerConfig)
 					if err != nil {
 						return fmt.Errorf("couldn't unmarshal FilterMixerConfig: %v", err)
 					}
-					httpConfig.Filters[i].FilterMixerConfig = &mixerConfig
+		
+					httpConfig.Filters[i].FilterMixerConfig = mixerConfig.V2
 				} else if httpConfig.Filters[i].Type == "decoder" && httpConfig.Filters[i].Name == "fault" {
 					var faultConfig FilterFaultConfig
 					err = json.Unmarshal(httpConfig.Filters[i].Config, &faultConfig)

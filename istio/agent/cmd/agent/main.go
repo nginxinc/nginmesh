@@ -29,6 +29,8 @@ func main() {
 	proxySidecarCmd.String("connectTimeout", "", "Binary path")
 	proxySidecarCmd.String("statsdUdpAddress", "", "Binary path")
 	proxySidecarCmd.String("proxyAdminPort", "", "Binary path")
+	collectorAddress := proxySidecarCmd.String("collectorAddress","","Collector address")
+	collectorTopic := proxySidecarCmd.String("collectorTopic","","Collector topic")
 	verbosity := proxySidecarCmd.String("v", "", "Verbosity level")
 
 	if len(os.Args) < 3 {
@@ -110,7 +112,8 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	client := pilot.NewClient(*discoveryAddress, &http.Client{}, *serviceCluster, serviceNode, podIP)
+	client := pilot.NewClient(*discoveryAddress, &http.Client{}, *serviceCluster, serviceNode, podIP,*collectorAddress,*collectorTopic)
+	glog.Info("collector address: %v, topic: %v",*collectorAddress,*collectorTopic)
 	pilotWatcher := pilot.NewWatcher(client, 5*time.Second)
 	go pilotWatcher.Run(ctx)
 

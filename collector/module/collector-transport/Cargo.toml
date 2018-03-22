@@ -1,0 +1,13 @@
+[package]
+name = "nginmesh-collector-transport"
+version = "0.6.0"
+authors = ["Sehyo Chang   sehyo@nginx.com"]
+
+
+[dependencies]
+chrono = "0.4.0"
+serde_json      = "1.0.5"
+
+
+
+
