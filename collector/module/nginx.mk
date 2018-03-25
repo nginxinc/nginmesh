@@ -176,10 +176,11 @@ kafka-install:
 
 kafka-add-test-topic:
 	kubectl -n kafka exec testclient -- /usr/bin/kafka-topics --zookeeper my-kafka-zookeeper:2181 --topic test --create --partitions 1 --replication-factor 1	
-		
 
-kafka-list-message:
-	kubectl -n kafka exec -ti testclient -- /usr/bin/kafka-console-consumer --bootstrap-server my-kafka-kafka:9092 --topic test --from-beginning
+# display message from beggining on test channel
+kafka-test-list-message:
+	kubectl run temp-kafka --image solsson/kafka --rm -ti --command -- bash \
+	bin/kafka-console-consumer.sh --bootstrap-server broker.kafka:9092 --topic test --from-beginning	
 
 test-nginx-full:	build-module test-nginx-only
 

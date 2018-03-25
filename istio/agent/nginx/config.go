@@ -15,6 +15,8 @@ type Main struct {
 	ServiceNode     string
 	ServiceCluster  string
 	Tracing         bool
+	CollectorServer string
+	LOGLEVEL		string
 }
 
 // DestinationMap is a map between remote destination and the corresponding local destination.
@@ -82,6 +84,7 @@ type Location struct {
 	MixerCheck        bool
 	MixerReport       bool
 	Tracing           bool
+	CollectorTopic	  string
 }
 
 // Rewrite is configuration for rewriting a URL.

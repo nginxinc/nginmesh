@@ -12,12 +12,9 @@ use ngx_rust::bindings::ngx_http_upstream_state_t;
 use nginmesh_collector_transport::attribute::attr_wrapper::AttributeWrapper;
 use nginmesh_collector_transport::attribute::global_dict::{ RESPONSE_DURATION };
 
-
-use super::message::Channels;
-use super::message::MixerInfo;
-
 use ngx::main_config::ngx_http_collector_main_conf_t;
 use ngx::server_config::ngx_http_collector_srv_conf_t;
+use ngx::location_config::ngx_http_collector_loc_conf_t;
 use ngx::config::CollectorConfig;
 use kafka::producer::{Producer, Record, RequiredAcks};
 use std::fmt::Write;
@@ -65,7 +62,7 @@ pub extern fn nginmesh_set_collector_server_config(server: &ngx_str_t)  {
 
 }
 
-fn send_stat(message: &str,server_name: &str) {
+fn send_stat(message: &str,server_name: &str,topic: &str) {
     
     let mut cache = PRODUCER_CACHE.lock().unwrap();
     let producer_result = cache.get_mut(server_name);
@@ -76,7 +73,7 @@ fn send_stat(message: &str,server_name: &str) {
     let mut buf = String::with_capacity(2);
     let _ = write!(&mut buf, "{}", message); 
     let producer = producer_result.unwrap();
-    producer.send(&Record::from_value("test", buf.as_bytes())).unwrap();
+    producer.send(&Record::from_value(topic, buf.as_bytes())).unwrap();
     ngx_event_debug!("send event to kafka topic test");
 
 }
@@ -110,19 +107,6 @@ pub fn collector_report_background()  {
 */
 
 
-// send to background thread using channels
-#[allow(unused_must_use)]
-fn send_dispatcher(request: &ngx_http_request_s,main_config: &ngx_http_collector_main_conf_t, attr: AttributeWrapper)  {
-
-    let server_name = main_config.collector_server.to_str();
-
-    send_stat(&attr.to_string(),&server_name);
-
-    ngx_http_debug!(request,"finish sending to kafer");
-
-}
-
-
 // Total Upstream response Time Calculation Function Start
 
 fn upstream_response_time_calculation( upstream_states: *const ngx_array_t ) -> i64 {
@@ -148,10 +132,13 @@ fn upstream_response_time_calculation( upstream_states: *const ngx_array_t ) -> 
 
 
 #[no_mangle]
-pub extern fn nginmesh_collector_report_handler(request: &ngx_http_request_s,main_config: &ngx_http_collector_main_conf_t,
-    srv_conf: &ngx_http_collector_srv_conf_t)  {
+pub extern fn nginmesh_collector_report_handler(request: &ngx_http_request_s,
+    main_config: &ngx_http_collector_main_conf_t,
+    srv_conf: &ngx_http_collector_srv_conf_t,
+    loc_conf: &ngx_http_collector_loc_conf_t)  {
 
-
+    let topic = loc_conf.topic.to_str();
+    let server_name = main_config.collector_server.to_str();
     let mut attr = AttributeWrapper::new();
     srv_conf.process_istio_attr(&mut attr);
     request.process_istio_attr(&mut attr);
@@ -160,7 +147,8 @@ pub extern fn nginmesh_collector_report_handler(request: &ngx_http_request_s,mai
     let headers_out =  &request.headers_out;
     headers_out.process_istio_attr(&mut attr);
 
-    send_dispatcher(request,main_config, attr)   
+    send_stat(&attr.to_string(),&server_name,&topic);
+    ngx_http_debug!(request,"finish sending to kafer");
 
 }
 

@@ -8,8 +8,7 @@ use ngx::config::CollectorConfig;
 
 #[repr(C)]
 pub struct ngx_http_collector_loc_conf_t {
-    pub enable_report: ngx_flag_t,              // for every location, we need flag to enable/disable mixer
-    pub enable_check: ngx_flag_t,
+    pub topic: ngx_str_t,
     pub destination_service: ngx_str_t
 }
 

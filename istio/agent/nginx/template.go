@@ -44,13 +44,13 @@ server {
     server_name {{range $name := $server.Names}} {{$name}}{{end}};
 
     {{if $.Mixer}}
-#    mixer_destination_ip  {{$.Mixer.DestinationIP}};
-#   mixer_destination_uid {{$.Mixer.DestinationUID}};
+#    collector_destination_ip  {{$.Mixer.DestinationIP}};
+#    collector_destination_uid {{$.Mixer.DestinationUID}};
     {{if $.Mixer.DestinationService}}
-#   mixer_destination_service {{$.Mixer.DestinationService}};
+#    collector_destination_service {{$.Mixer.DestinationService}};
     {{end}}
-#    mixer_source_ip {{$.Mixer.SourceIP}};
-#    mixer_source_uid {{$.Mixer.SourceUID}};
+#    collector_source_ip {{$.Mixer.SourceIP}};
+#    collector_source_uid {{$.Mixer.SourceUID}};
     {{end}}
 
     {{range $location := $server.Locations}}
@@ -61,9 +61,12 @@ server {
 
         {{if $location.Internal}}internal;{{end}}
 
- #       mixer_report {{if $location.MixerReport}}on{{else}}off{{end}};
- #       mixer_check {{if $location.MixerCheck}}on{{else}}off{{end}};
-        collector_report on;
+        {{if $location.MixerReport}}
+        {{if $location.CollectorTopic}}
+        collector_report {{$location.CollectorTopic}};
+        {{end}}
+        {{end}}
+
        
         {{if $location.Tracing}}
         opentracing_operation_name $host:$server_port;
@@ -136,7 +139,7 @@ load_module /etc/nginx/modules/ngx_http_zipkin_module.so;
 
 worker_processes  auto;
 
-error_log  /dev/stdout debug;
+error_log  /dev/stdout {{.LOGLEVEL}};
 pid        /etc/istio/proxy/nginx.pid;
 
 
@@ -192,13 +195,7 @@ http {
     server_names_hash_bucket_size 128;
     variables_hash_bucket_size 128;
 
-    # mixer configuration
-    {{if .Mixer}}
-    mixer_server {{.Mixer.MixerServer}};
-    mixer_port   {{.Mixer.MixerPort}};
-    {{end}}
-
-    collector_server my-kafka-kafka.kafka:9092;
+    collector_server {{.CollectorServer}};
 
     # Support for Websocket
     map $http_upgrade $connection_upgrade {

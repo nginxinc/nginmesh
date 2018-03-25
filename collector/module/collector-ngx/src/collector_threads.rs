@@ -1,7 +1,3 @@
-
-
-use std::thread ;
-
 use ngx_rust::bindings::ngx_int_t;
 use ngx_rust::bindings::NGX_OK;
 
