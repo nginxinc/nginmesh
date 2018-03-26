@@ -4,29 +4,29 @@ use std::collections::HashMap;
 // This is from global_dictionary.yaml
 
 
-pub const REQUEST_HEADER: &str = "request.headers";
-pub const TARGET_SERVICE: &str = "target.service";
-pub const REQUEST_HOST: &str = "request.host";
-pub const REQUEST_METHOD: &str = "request.method";
-pub const REQUEST_PATH: &str =  "request.path";
-pub const REQUEST_REFER: &str = "request.referer";
-pub const REQUEST_SCHEME: &str = "request.scheme";
-pub const REQUEST_SIZE: &str = "request.size";
-pub const REQUEST_TIME: &str = "request.time";
-pub const REQUEST_USERAGENT: &str = "request.useragent";
-pub const RESPONSE_CODE: &str = "response.code";
-pub const RESPONSE_DURATION: &str = "response.duration";
-pub const RESPONSE_SIZE: &str = "response.size";
-pub const RESPONSE_HEADERS: &str = "response.headers";
-pub const SOURCE_IP: &str = "source.ip";
-pub const SOURCE_UID: &str = "source.uid";
-pub const SOURCE_PORT: &str = "source.port";
-pub const SOURCE_SERVICE: &str = "source.service";
+pub const REQUEST_HEADER: &str = "request_headers";
+pub const TARGET_SERVICE: &str = "target_service";
+pub const REQUEST_HOST: &str = "request_host";
+pub const REQUEST_METHOD: &str = "request_method";
+pub const REQUEST_PATH: &str =  "request_path";
+pub const REQUEST_REFER: &str = "request_referer";
+pub const REQUEST_SCHEME: &str = "request_scheme";
+pub const REQUEST_SIZE: &str = "request_size";
+pub const REQUEST_TIME: &str = "request_time";
+pub const REQUEST_USERAGENT: &str = "request_useragent";
+pub const RESPONSE_CODE: &str = "response_code";
+pub const RESPONSE_DURATION: &str = "response_duration";
+pub const RESPONSE_SIZE: &str = "response_size";
+pub const RESPONSE_HEADERS: &str = "response_headers";
+pub const SOURCE_IP: &str = "source_ip";
+pub const SOURCE_UID: &str = "source_uid";
+pub const SOURCE_PORT: &str = "source_port";
+pub const SOURCE_SERVICE: &str = "source_service";
 pub const SRC_IP_HEADER: &str = "X-ISTIO-SRC-IP";
 pub const SRC_UID_HEADER: &str = "X-ISTIO-SRC-UID";
-pub const DESTINATION_SERVICE: &str = "destination.service";
-pub const DESTINATION_UID: &str = "destination.uid";
-pub const DESTINATION_IP: &str = "destination.ip";
+pub const DESTINATION_SERVICE: &str = "destination_service";
+pub const DESTINATION_UID: &str = "destination_uid";
+pub const DESTINATION_IP: &str = "destination_ip";
 
 
 

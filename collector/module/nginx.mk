@@ -98,7 +98,7 @@ build-module-docker:
 	
 
 # build module and deposit in the module directory
-build-module: build-module-docker
+build-module: build-module-docker copy-module
 
 # build base container image that pre-compiles rust and nginx modules
 build-base:

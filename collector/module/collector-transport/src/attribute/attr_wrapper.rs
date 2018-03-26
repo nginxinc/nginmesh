@@ -51,8 +51,8 @@ impl AttributeWrapper  {
 
 
     pub fn insert_time_stamp_attribute(&mut self, key: &str, value: DateTime<Utc>) {
-
-        self.insert_value(key,json!(value.to_string()));
+        let unix_time = value.timestamp();
+        self.insert_value(key,json!(unix_time));
     }
 
 
