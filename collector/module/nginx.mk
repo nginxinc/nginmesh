@@ -164,15 +164,9 @@ test-k8-setup:
 	kubectl exec -it nginx-test-57df6c6988-d6wnf /bin/bash
 	kubectl port-forward nginx-test-57df6c6988-d6wnf 8000:8000 &
 
-show-k8-logs:
+test-show-k8-logs:
 	kubectl logs $(kubectl get pod -l app=nginmesh -o jsonpath='{.items[0].metadata.name}')
 
-
-kafka-install:
-	kubectl create ns kafka
-	helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-	helm install --name my-kafka --namespace kafka incubator/kafka
-	kubectl apply -f test/kafka-client.yml
 
 kafka-add-test-topic:
 	kubectl -n kafka exec testclient -- /usr/bin/kafka-topics --zookeeper my-kafka-zookeeper:2181 --topic test --create --partitions 1 --replication-factor 1	
@@ -184,6 +178,11 @@ kafka-test-list-message:
 
 test-nginx-full:	build-module test-nginx-only
 
-# invoke http report
+# test report deployed locally
 test-http-report:
 	curl localhost:8000/report
+
+# invoke wrecker
+test-wreck-medium:
+	 wrk -c10 -d1s -t5 http://localhost:8000/report	
+

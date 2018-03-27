@@ -1,4 +1,5 @@
 #!/bin/bash
 # generate and install sidecar
+SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 set -x
-./install-sidecar.sh gcr.io
+$SCRIPTDIR/install-sidecar.sh gcr.io
