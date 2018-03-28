@@ -40,7 +40,8 @@ impl CollectorConfig for ngx_http_request_s  {
         attr.insert_string_attribute(REQUEST_SCHEME, "http"); // hard code now
         attr.insert_int64_attribute(REQUEST_SIZE, self.request_length);
 
-        attr.insert_time_stamp_attribute(REQUEST_TIME, Utc.timestamp(self.start_sec,self.start_msec as u32));
+     //   attr.insert_time_stamp_attribute(REQUEST_TIME, Utc.timestamp(self.start_sec,self.start_msec as u32));
+        attr.insert_time_stamp_attribute(REQUEST_TIME, Utc::now());
       //  attr.insert_string_attribute(REQUEST_USERAGENT, headers_in.user_agent_str());
 
         

@@ -1,6 +1,7 @@
 
 use chrono::{Utc,DateTime};
 use serde_json::{Map,Value,to_string};
+use time::get_time;
 
 pub struct AttributeWrapper {
 
@@ -51,8 +52,11 @@ impl AttributeWrapper  {
 
 
     pub fn insert_time_stamp_attribute(&mut self, key: &str, value: DateTime<Utc>) {
-        let unix_time = value.timestamp();
-        self.insert_value(key,json!(unix_time));
+       // let unix_time = value.timestamp();
+       let current_time = get_time();
+       let milliseconds = (current_time.sec as i64 * 1000) + 
+                       (current_time.nsec as i64 / 1000 / 1000);
+        self.insert_value(key,json!(milliseconds));
     }
 
 

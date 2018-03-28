@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kconnect
+  namespace: kafka
+spec:
+  containers:
+  - name: connect
+    image:  confluentinc/ksql-clickstream-demo
+    command:
+      - sh
+      - -c
+      - "exec tail -f /dev/null"
