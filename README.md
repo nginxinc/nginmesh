@@ -1,15 +1,16 @@
-# NGINX Service Mesh with Istio compatibility
+# NGINX Streaming Architecture with Istio Service Mesh
 This repository provides an implementation of a NGINX based service mesh (nginMesh).  nginMesh is compatible with Istio.  It leverages NGINX as a sidecar proxy. 
 
 ## What is Service Mesh and Istio?
 Please check https://istio.io for a detailed explanation of the service mesh.  
 
 ## Production Status
-The current version of nginMesh is designed to work with Istio release 0.6.0. It should not be used in the production environment.  
+The current version of nginMesh is designed to work with Istio release 0.6.0. It should not be used in production environments.  
 
 ## Architecture
 The diagram below depicts how an NGINX sidecar proxy is implemented. The sidecar uses open source version of NGINX with first-party modules as well as third-party modules for tracing.
-With this release, nginMesh leverages Kafka for delivery of mesh metrics. 
+In 0.6.0 release, nginMesh leverages Kafka for delivery of mesh metrics. 
+mTLS authentication between sidecars is planned in upcoming release.
 
 ![Alt text](/images/nginx_sidecar.png?raw=true "NGINX Sidecar")
 
@@ -33,16 +34,12 @@ curl -L https://git.io/getLatestIstio | ISTIO_VERSION=0.6.0 sh -
 curl -L https://github.com/nginmesh/nginmesh/releases/download/0.6.0/nginmesh-0.6.0.tar.gz | tar zx
 ```
 
-3. Deploy Istio either with or without enabled mutual TLS (mTLS) authentication between sidecars:
+3. Deploy Istio between sidecars:
 
-a) Install Istio without enabling mTLS:
 ```
 kubectl create -f istio-0.6.0/install/kubernetes/istio.yaml
 ```
-b) Install Istio with mTLS:
-```
-kubectl create -f istio-0.6.0/install/kubernetes/istio-auth.yaml
-```
+
 
 4. Ensure the following Kubernetes services are deployed: istio-pilot, istio-mixer, istio-ingress:
 ```
@@ -227,19 +224,10 @@ http://<Public-IP-of-the-Ingress-Controller>/productpage
 ### Uninstalling Istio
 1. To uninstall the Istio core components:
 
-a) If mTLS is disabled:
-
 ```
 kubectl delete -f istio-0.6.0/install/kubernetes/istio.yaml
 ```
 
-OR:
-
-b) If mTLS is enabled:
-
-```
-kubectl delete -f istio-0.6.0/install/kubernetes/istio-auth.yaml
-```
 
 2. To uninstall the initializer, run:
 
