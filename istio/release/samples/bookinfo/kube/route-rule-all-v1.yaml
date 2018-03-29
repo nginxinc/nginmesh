@@ -3,6 +3,7 @@ kind: RouteRule
 metadata:
   name: productpage-default
 spec:
+  ## Used by services inside the Kubernetes cluster
   destination:
     name: productpage
   precedence: 1

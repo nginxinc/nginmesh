@@ -1,14 +1,67 @@
 # KSQL Demo
 
-### Install Elastic Search
+## Install
 
-1. Use Helm to install Elastic Search
+### Install Elastic Search
 ```
- helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
- helm install --name elastic incubator/elasticsearch --namespace elastic --set data.persistence.enabled=false,master.persistence.enabled=false --set rbac.create=true
+./install-elastic.sh
 ```
-This install elastic 5.4 in the namespace 'elastic'
-2. Run following script to setup Kafka. It is installed in 'kafka' namespace.  It is possible to use your existing kafka installation.
+This will install elastic cluster in the namespace 'elastic'
+
+### Install Grafana
 ```
-nginmesh-0.6.0/install/kafka/install.sh
+./install-grafana.sh
 ```
+This will install grafana in the namespace 'kafka'
+
+### Install Connect
+```
+./install-connect.sh
+```
+This will create pod with Kafka Connect.
+After pod is successfully created, run following script to copy connect properties
+```
+./copy-connect.sh
+```
+Then run following script to shell into connect and start connect
+```
+./run-connect.sh
+```
+Then in the shell, run
+```
+cd /etc/kafka
+connect-distributed connect-distributed.properties
+```
+
+### Install KSQL
+```
+./install-ksql.sh
+```
+After pod is created, run following script
+```
+./copy-sql.sh
+```
+Then run following shell to exec into ksql pod
+```
+./run-ksql.sh
+```
+run following script in the SQL
+``
+run script '/tmp/create.sql';
+``
+### Start following port-forwarding, this is required in order to connect kafka to elastic search to grafana
+```
+./elastic-portforward.sh
+./connect-portforward.sh
+./grafana-portforward.sh
+```
+
+### Connect following tables to Elastic Search and Set up data source to Grafana
+
+```
+./ksql-tables-to-grafana.sh request_path_stat_ts
+./ksql-tables-to-grafana.sh request_path_stat
+
+## Visualization
+
+TBD

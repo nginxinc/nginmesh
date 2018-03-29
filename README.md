@@ -8,9 +8,8 @@ Please check https://istio.io for a detailed explanation of the service mesh.
 The current version of nginMesh is designed to work with Istio release 0.6.0. It should not be used in production environments.  
 
 ## Architecture
-The diagram below depicts how an NGINX sidecar proxy is implemented. The sidecar uses open source version of NGINX with first-party modules as well as third-party modules for tracing.
-In 0.6.0 release, nginMesh leverages Kafka for delivery of mesh metrics. 
-mTLS authentication between sidecars is planned in upcoming release.
+The diagram below depicts how an NGINX sidecar proxy is implemented. Sidecar uses the open source version of NGINX compiled with modules for tracing and monitoring.
+In 0.6.0 release, nginMesh leverages Kafka for delivery traffic metrics across the Service Mesh. Security features, such as mTLS authentication are planned in upcoming releases.
 
 ![Alt text](/images/nginx_sidecar.png?raw=true "NGINX Sidecar")
 
@@ -104,12 +103,9 @@ tiller-deploy-f44659b6c-p48hf                        1/1       Running   0      
 ```
 nginmesh-0.6.0/install/kafka/install.sh
 ```
-
 Note: In GKE environment you may need to grant permission to default serviceaccount for cluster-wide access before install:
 
 ```
-kubectl create clusterrolebinding add-on-cluster-admin --clusterrole=cluster-admin --serviceaccount=kube-system:default
-
 kubectl create serviceaccount --namespace kube-system tiller
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
 kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
@@ -148,7 +144,7 @@ nginmesh-0.6.0/tools/kafka-add-topics.sh nginmesh
 8. View created topic by running below script:
 
 ```
-nginmesh-0.6.0/tools/kafka-list-topics.sh nginmesh
+nginmesh-0.6.0/tools/kafka-list-topics.sh
 ```
 ```
 nginmesh

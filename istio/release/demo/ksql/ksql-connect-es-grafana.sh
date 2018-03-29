@@ -47,5 +47,5 @@ curl -X "POST" "http://localhost:8083/connectors/" \
 curl -X "POST" "http://localhost:3000/api/datasources" \
 	    -H "Content-Type: application/json" \
 	     --user admin:admin \
-	     -d $'{"id":1,"orgId":1,"name":"'$table_name'","type":"elasticsearch","typeLogoUrl":"public/app/plugins/datasource/elasticsearch/img/elasticsearch.svg","access":"proxy","url":"http://elastic-elasticsearch-client.elastic:9200","password":"","user":"","database":"'$table_name'","basicAuth":false,"isDefault":false,"jsonData":{"timeField":"EVENT_TS"}}'
+	     -d $'{"id":1,"orgId":1,"name":"'$table_name'","type":"elasticsearch","typeLogoUrl":"public/app/plugins/datasource/elasticsearch/img/elasticsearch.svg","access":"proxy","url":"http://elastic-elasticsearch-client.elastic:9200","password":"","user":"","database":"'$table_name'","basicAuth":false,"isDefault":false,"jsonData":{"timeField":"EVENT_TSs"}}'
 

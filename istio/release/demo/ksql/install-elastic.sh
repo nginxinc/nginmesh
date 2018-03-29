@@ -1,3 +1,3 @@
 #!/bin/bash
 set -x
-helm install --name my-es-test2 incubator/elasticsearch --namespace elastic2 --set data.persistence.enabled=false,master.persistence.enabled=false --set rbac.create=true
+helm install --name elastic  incubator/elasticsearch --namespace elastic --set data.persistence.enabled=false,master.persistence.enabled=false --set rbac.create=true
