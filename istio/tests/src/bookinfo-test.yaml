@@ -1,0 +1,49 @@
+##################################################################################################
+#  Bookinfo-Test
+##################################################################################################
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: test
+  namespace: test
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bookinfo-test
+  namespace: test
+  labels:
+    app: bookinfo-test
+spec:
+  ports:
+  - port: 80
+    name: http
+  selector:
+    app: bookinfo-test
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: bookinfo-test-v1
+  namespace: test
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: bookinfo-test
+        version: v1
+    spec:
+
+      containers:
+      - name: bookinfo-test
+        image: nginmesh/bookinfo_testing:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+---
