@@ -1,5 +1,5 @@
 # Template for nginmesh sidecar
-# this works with Istio 0.6
+# this works with Istio 0.7.1
 kind: ConfigMap
 metadata:
   name: istio-inject
@@ -11,7 +11,7 @@ data:
     template: |-
       initContainers:
       - name: istio-init
-        image: docker.io/istio/proxy_init:0.6.0
+        image: {ISTIO_PROXY_INIT}
         args:
         - "-p"
         - {{ .MeshConfig.ProxyListenPort }}
@@ -88,7 +88,7 @@ data:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         securityContext:
             privileged: true
             readOnlyRootFilesystem: false

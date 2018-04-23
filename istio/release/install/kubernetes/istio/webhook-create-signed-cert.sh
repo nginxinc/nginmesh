@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script is borrowed from Istio K8 script
+
 set -e
 
 usage() {

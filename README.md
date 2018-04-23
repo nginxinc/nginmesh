@@ -5,11 +5,11 @@ This repository provides an implementation of a NGINX based service mesh (nginMe
 Please check https://istio.io for a detailed explanation of the service mesh.  
 
 ## Production Status
-The current version of nginMesh is designed to work with Istio release 0.6.0. It should not be used in production environments.  
+The current version of nginMesh is designed to work with Istio release 0.7.1. It should not be used in production environments.  
 
 ## Architecture
 The diagram below depicts how an NGINX sidecar proxy is implemented. Sidecar uses the open source version of NGINX compiled with modules for tracing and monitoring.
-In 0.6.0 release, nginMesh leverages Kafka for delivery traffic metrics across the Service Mesh. Security features, such as mTLS authentication are planned in upcoming releases.
+In 0.7.1 release, nginMesh leverages Kafka for delivery traffic metrics across the Service Mesh. Security features, such as mTLS authentication are planned in upcoming releases.
 
 ![Alt text](/images/nginx_sidecar.png?raw=true "NGINX Sidecar")
 
@@ -24,19 +24,19 @@ Make sure you have a Kubernetes cluster with at least 1.9 or greater due to fact
 ### Installing Istio and nginMesh
 nginMesh requires installation of Istio first.
 
-1. Download and install Istio 0.6.0:
+1. Download and install Istio 0.7.1:
 ```
-curl -L https://git.io/getLatestIstio | ISTIO_VERSION=0.6.0 sh -
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=0.7.1 sh -
 ```
-2. Download nginMesh release 0.6.0:
+2. Download nginMesh release 0.7.1:
 ```
-curl -L https://github.com/nginmesh/nginmesh/releases/download/0.6.0/nginmesh-0.6.0.tar.gz | tar zx
+curl -L https://github.com/nginmesh/nginmesh/releases/download/0.7.1/nginmesh-0.7.1.tar.gz | tar zx
 ```
 
 3. Deploy Istio between sidecars:
 
 ```
-kubectl create -f istio-0.6.0/install/kubernetes/istio.yaml
+kubectl create -f istio-0.7.1/install/kubernetes/istio.yaml
 ```
 
 
@@ -65,7 +65,7 @@ kubectl get pods -n istio-system
 6. Automatic sidecar:
 To set up sidecar injection, please run following script which will install Istio webhook with nginMesh customization.
 ```
-nginmesh-0.6.0/install/kubernetes/install-sidecar.sh
+nginmesh-0.7.1/install/kubernetes/install-sidecar.sh
 ```
 
 7. Verify that istio-injection label is not labeled for the default namespace :
@@ -101,7 +101,7 @@ tiller-deploy-f44659b6c-p48hf                        1/1       Running   0      
 4. Run the following script to setup Kafka. It will be installed in 'kafka' namespace.  It is also possible to use existing kafka installation.
 
 ```
-nginmesh-0.6.0/install/kafka/install.sh
+nginmesh-0.7.1/install/kafka/install.sh
 ```
 Note: In GKE environment you may need to grant permission to default serviceaccount for cluster-wide access before install:
 
@@ -139,12 +139,12 @@ my-kafka	           1           Tue Mar 27 18:45:18 2018	          DEPLOYE
 7. Set up  topic named "nginmesh" by running below script:
 
 ```
-nginmesh-0.6.0/tools/kafka-add-topics.sh nginmesh
+nginmesh-0.7.1/tools/kafka-add-topics.sh nginmesh
 ```
 8. View created topic by running below script:
 
 ```
-nginmesh-0.6.0/tools/kafka-list-topics.sh
+nginmesh-0.7.1/tools/kafka-list-topics.sh
 ```
 ```
 nginmesh
@@ -162,7 +162,7 @@ kubectl label namespace default istio-injection=enabled
 2. Deploy the application:
 
 ```
-kubectl apply -f  nginmesh-0.6.0/samples/bookinfo/kube/bookinfo.yaml
+kubectl apply -f  nginmesh-0.7.1/samples/bookinfo/kube/bookinfo.yaml
 ```
 
 3. Confirm that all application services are deployed: productpage, details, reviews, ratings:
@@ -212,11 +212,14 @@ http://<Public-IP-of-the-Ingress-Controller>/productpage
 
 Note: For E2E routing rules and performace testing you could refer to [E2E Test](istio/tests/README.md).
 
+### Demo nginMesh streaming using Graylog
+[Demo Graylog](istio/release/demo/graylog/README.md) Please, refer for Graylog integration with nginMesh.
+
 ### Uninstalling the Application
 1. To uninstall application, run:
 
 ```
-./nginmesh-0.6.0/samples/bookinfo/kube/cleanup.sh
+./nginmesh-0.7.1/samples/bookinfo/kube/cleanup.sh
 ```
 
 
@@ -224,14 +227,14 @@ Note: For E2E routing rules and performace testing you could refer to [E2E Test]
 1. To uninstall the Istio core components:
 
 ```
-kubectl delete -f istio-0.6.0/install/kubernetes/istio.yaml
+kubectl delete -f istio-0.7.1/install/kubernetes/istio.yaml
 ```
 
 
 2. To uninstall the initializer, run:
 
 ```
-nginmesh-0.6.0/install/kubernetes/delete-sidecar.sh
+nginmesh-0.7.1/install/kubernetes/delete-sidecar.sh
 ```
 
 ### Uninstalling Kafka
@@ -239,7 +242,7 @@ nginmesh-0.6.0/install/kubernetes/delete-sidecar.sh
 1. Uninstall Kafka:
 
 ```
-nginmesh-0.6.0/install/kafka/uninstall.sh
+nginmesh-0.7.1/install/kafka/uninstall.sh
 ``` 
 
 2. Delete Tiller deployment:

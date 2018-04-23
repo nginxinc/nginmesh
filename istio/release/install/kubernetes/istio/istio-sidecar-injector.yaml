@@ -38,7 +38,7 @@ spec:
       serviceAccountName: istio-sidecar-injector-service-account
       containers:
         - name: webhook
-          image: docker.io/istio/sidecar_injector:0.6.0
+          image: docker.io/istio/sidecar_injector:0.7.1
           imagePullPolicy: IfNotPresent
           args:
             - --tlsCertFile=/etc/istio/certs/cert.pem
@@ -106,6 +106,7 @@ webhooks:
         apiGroups: [""]
         apiVersions: ["v1"]
         resources: ["pods"]
+    failurePolicy: Fail
     namespaceSelector:
       matchLabels:
         istio-injection: enabled

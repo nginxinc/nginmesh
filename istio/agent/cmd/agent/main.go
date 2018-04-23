@@ -29,6 +29,7 @@ func main() {
 	proxySidecarCmd.String("connectTimeout", "", "Binary path")
 	proxySidecarCmd.String("statsdUdpAddress", "", "Binary path")
 	proxySidecarCmd.String("proxyAdminPort", "", "Binary path")
+	proxySidecarCmd.String("controlPlaneAuthPolicy", "", "Binary path")
 	collectorAddress := proxySidecarCmd.String("collectorAddress","","Collector address")
 	collectorTopic := proxySidecarCmd.String("collectorTopic","","Collector topic")
 	logLevel := proxySidecarCmd.String("ngxLogLevel","","NGINX Log Level")

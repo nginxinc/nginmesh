@@ -8,7 +8,8 @@ NGINMESH_IMAGE_HUB=${1:-docker.io}
 KAFKA=${2:-my-kafka}
 KAFKA_TOPIC=${3:-nginmesh}
 NGX_LOG_LEVEL=${4:-warn}
-NGINMESH_VERSION=0.6.0
+NGINMESH_VERSION=0.7.1
+ISTIO_PROXY_INIT=docker.io/istio/proxy_init:0.7.1
 echo "generating sidecar config using kafka: $KAFKA, topic: $KAFKA_TOPIC"
 KAFKA_SERVER=${KAFKA}-kafka.kafka:9092
 NGINMESH_CONFIG_NAME=nginmesh-sidecar-injector-configmap.yaml
@@ -20,3 +21,4 @@ sed -i .bak "s|{KAFKA_SERVER}|${KAFKA_SERVER}|" $GEN_NGINMESH
 sed -i .bak "s|{KAFKA_TOPIC}|${KAFKA_TOPIC}|" $GEN_NGINMESH
 sed -i .bak "s|{NGX_LOG_LEVEL}|${NGX_LOG_LEVEL}|" $GEN_NGINMESH
 sed -i .bak "s|{NGINMESH_VERSION}|${NGINMESH_VERSION}|" $GEN_NGINMESH
+sed -i .bak "s|{ISTIO_PROXY_INIT}|${ISTIO_PROXY_INIT}|" $GEN_NGINMESH
