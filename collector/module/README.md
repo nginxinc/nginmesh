@@ -17,27 +17,21 @@ Build system use Docker to generate the module binary.
  http   {
  
  	 mixer_server istio-mixer.istio-system;
-     mixer_port   9091;
+         mixer_port   9091;
 
- 
 	 server {
 	 
 	      mixer_source_ip     10.0.0.0;
-          mixer_source_uid    kubernetes://productpage-v1-2213572757-758cs.beta1;
-          mixer_source_service productpage.beta1.svc.cluster.local;
-          mixer_destination_service abc.ns.svc.cluster.local;
-          mixer_destination_uid details;
+              mixer_source_uid    kubernetes://productpage-v1-2213572757-758cs.beta1;
+              mixer_source_service productpage.beta1.svc.cluster.local;
+              mixer_destination_service abc.ns.svc.cluster.local;
+              mixer_destination_uid details;
          
-         
-          location /  {
-              mixer_report on;
-              proxy_pass http://service1;
-          }
-         
-            
-			
+              location /  {
+                  mixer_report on;
+                  proxy_pass http://service1;
+              }	
 	 }
-		
  }	
 
 ```
