@@ -16,7 +16,7 @@ It has 3 main components:
 Please, check [link](http://docs.graylog.org/en/2.4/) for documentation.
 
 ## Quick Start
-Below are instructions to quickly install and configure Graylog.
+Below are instructions to quickly install and configure  Graylog v2.4.3.
 
 ### Prerequisites
 Make sure below requirements are met:
@@ -32,7 +32,7 @@ Make sure below requirements are met:
 ### Install Graylog
 1. Install graylog deployment in graylog namespace:
 ```
- kubectl create -f nginmesh-0.7.1/demo/graylog/graylog.yaml
+ kubectl create -f graylog.yaml
 ```
 2. Make sure following pods are up and running:
 
@@ -59,7 +59,7 @@ mongo           ClusterIP      None           <none>            55555/TCP       
 
 4. Activate port-forwarding for running graylog pod:
 ```
-kubectl port-forward graylog-c4d976795-vfhpf -n graylog 9000:9000
+./graylog-portforward.sh
 ```
 
 5. Access to Graylog Dashboard from browser using default credentials:
@@ -80,7 +80,7 @@ Note: Check graylog deployment file for username/password passed as environment 
 
 ![Alt text](images/2_content_packs.png?raw=true "Content Packs")
 
-2. Upload  [nginmesh_kafka_package.json](nginmesh_kafka_package.json) file which contains all configuration related to Kafka input/extractor/dashboard:
+2. Upload  [nginmesh_kafka_package.json](nginmesh_kafka_pacskage.json) file which contains all configuration related to Kafka input/extractor/dashboard:
 
 ![Alt text](images/3_upload_package.png?raw=true "Upload Packs")
 
@@ -92,10 +92,26 @@ Note: Check graylog deployment file for username/password passed as environment 
 
 ![Alt text](images/5_dashboard.png?raw=true "Dashboard ")
 
+### Configure Geo-Location plugin
+
+1. Install Map database provided by MaxMind:
+```
+./install_map.sh
+```
+Note: Please, refer for plugin [details](http://docs.graylog.org/en/2.4/pages/geolocation.html).
+
+2. Enable Geo-Location processor and set path to "/usr/share/graylog/plugin/GeoLite2-City.mmdb" in System/Configurations menu:
+
+![Alt text](images/6_geoloc_proc.png?raw=true "GeoLoc Processor ")
+
+3. Enable Message processors in below order in System/Configurations menu:
+
+![Alt text](images/7_message_proc.png?raw=true "Message Processor ")
+
 
 ### Uninstalling the Graylog
 1. To uninstall Graylog deployment, run:
 ``` 
-kubectl delete -f nginmesh-0.7.1/demo/graylog/graylog.yaml
+kubectl delete -f graylog.yaml
 ```
 

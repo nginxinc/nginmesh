@@ -1,67 +1,132 @@
-# KSQL Demo
+# Demo nginMesh streaming using KSQL 
 
-## Install
+This demo focuses on building real-time analytics of users inside nginMesh enabled cluster. Please, refer to this [link](https://github.com/confluentinc/ksql/tree/master/ksql-clickstream-demo) for details of used demo.
 
-### Install Elastic Search
+## Quick Start
+
+### Prerequisites
+
+Make sure below requirements are met:
+  
+  | Version | Name | Details |
+  | --- | ------ | ------ |
+  |1.9|Kubernetes cluster|Without alpha feature, [link](https://istio.io/docs/setup/kubernetes/quick-start.html#google-kubernetes-engine)|
+  |0.7.0|Istio|[link](https://istio.io/docs/setup/kubernetes/quick-start.html)|
+  |0.7.0|nginMesh|[link](https://github.com/nginmesh/nginmesh/blob/master/README.md)|
+  |1.5.0|Bookinfo Application|[link](https://github.com/istio/istio/blob/master/samples/bookinfo/src)|
+  |1.1.0|Kafka|[link](https://kafka.apache.org/downloadsc)|
+  |2.9.0|Helm|[link](https://docs.helm.sh/using_helm/)|
+  |4.1.0| Wrk|[link](https://github.com/wg/wrk)| 
+
+### Install 
+
+1. Install Kafka connect in the namespace 'kafka':
+```
+kubectl create -f ../../install/kafka/connect.yml
+```
+
+2. Install KSQL server in the namespace 'kafka':
+```
+kubectl create -f ../../install/kafka/ksql.yml
+```
+
+3. Download and install KSQL client from this [link](https://www.confluent.io/download/). Update $PATH variable either in .bash_profile or .bashrc to include /bin directory of KSQL.
+
+4. Install Elasticsearch  in the namespace 'elastic':
 ```
 ./install-elastic.sh
 ```
-This will install elastic cluster in the namespace 'elastic'
 
-### Install Grafana
+5. Install Grafana in the namespace 'kafka':
 ```
 ./install-grafana.sh
 ```
-This will install grafana in the namespace 'kafka'
-
-### Install Connect
+6. Make sure all pods and services are up and running:
 ```
-./install-connect.sh
+kubectl get pods -n kafka
 ```
-This will create pod with Kafka Connect.
-After pod is successfully created, run following script to copy connect properties
 ```
-./copy-connect.sh
+NAME                             READY     STATUS    RESTARTS   AGE
+grafana-8679d8f6b9-xvn6p         1/1       Running   0          14h
+kconnect                         1/1       Running   0          14h
+ksql-cli                         1/1       Running   0          3d
+my-kafka-kafka-0                 1/1       Running   1          11d
+my-kafka-kafka-1                 1/1       Running   0          3d
+my-kafka-kafka-2                 1/1       Running   0          11d
+my-kafka-zookeeper-0             1/1       Running   0          11d
+my-kafka-zookeeper-1             1/1       Running   1          11d
+my-kafka-zookeeper-2             1/1       Running   0          11d
+testclient                       1/1       Running   0          11d
 ```
-Then run following script to shell into connect and start connect
 ```
-./run-connect.sh
+kubectl get pods -n elastic
 ```
-Then in the shell, run
 ```
-cd /etc/kafka
-connect-distributed connect-distributed.properties
-```
-
-### Install KSQL
-```
-./install-ksql.sh
-```
-After pod is created, run following script
-```
-./copy-sql.sh
-```
-Then run following shell to exec into ksql pod
-```
-./run-ksql.sh
-```
-run following script in the SQL
-``
-run script '/tmp/create.sql';
-``
-### Start following port-forwarding, this is required in order to connect kafka to elastic search to grafana
-```
-./elastic-portforward.sh
-./connect-portforward.sh
-./grafana-portforward.sh
+NAME                                            READY     STATUS    RESTARTS   AGE
+elastic-elasticsearch-client-5c8f946c87-79s5g   1/1       Running   2          3d
+elastic-elasticsearch-client-5c8f946c87-vvkc2   1/1       Running   3          3d
+elastic-elasticsearch-data-0                    1/1       Running   0          3d
+elastic-elasticsearch-data-1                    1/1       Running   1          3d
+elastic-elasticsearch-master-0                  1/1       Running   0          3d
+elastic-elasticsearch-master-1                  1/1       Running   1          3d
+elastic-elasticsearch-master-2                  1/1       Running   0          3d
 ```
 
-### Connect following tables to Elastic Search and Set up data source to Grafana
+7. Run following script to activate port-forwarding for ksql, connect, elasticsearch and grafana to localhost:
 
 ```
-./ksql-tables-to-grafana.sh request_path_stat_ts
-./ksql-tables-to-grafana.sh request_path_stat
+./all-portforward.sh
+```
 
-## Visualization
+8. Run following script to create nginMesh stream and tables which will be pushed to Elasticsearch and Grafana:
+```
+./install_metrics.sh
+```
 
-TBD
+### Visualize metrics in Grafana
+
+1. Run following script to get password for grafana admin user:
+```
+./grafana-password.sh
+```
+
+2. Access to Grafana Dashboard in [http://localhost:3000](http://localhost:3000/) from browser using retrieved credentials.
+
+3. Run below script to import nginMesh dashboard to Grafana:
+```
+./grafana-upload-dashboard.sh
+```
+
+4. Generate requests towards sample application deployed and make sure all widgets show data accordingly. Below script could be used in Istio default Bookinfo application case:
+```
+./gen_load.sh
+```
+
+![Alt text](images/dashboard.png?raw=true "Grafana Dashboard")
+
+### Unistall 
+
+1. Unistall Kafka connect:
+```
+kubectl delete -f ../../install/kafka/connect.yml
+```
+
+2. Unistall KSQL server:
+```
+kubectl delete -f ../../install/kafka/ksql.yml
+```
+
+3. Uninstall Elasticsearch:
+```
+helm del --purge elastic;
+```
+
+4. Uninstall Grafana:
+```
+helm del --purge grafana;
+```
+
+5. Deactivate all port-forwardings:
+```
+pkill -f port-forward
+```

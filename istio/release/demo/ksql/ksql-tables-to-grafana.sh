@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-set -X
+#set -X
 table_name=$1
+grafana_password=`kubectl get secret --namespace kafka grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
 TABLE_NAME=`echo $table_name | tr '[a-z]' '[A-Z]'`
 echo "=================================================================="
 echo "Charting " $TABLE_NAME
@@ -8,13 +9,16 @@ echo "Charting " $TABLE_NAME
 ## Cleanup existing data
 
 # Elastic
+echo "removing elastic table"
 curl -X "DELETE" "http://localhost:9200/""$table_name"
 
 # Connect
-curl -X "DELETE" "http://localhost:8083/connectors/es_sink_""$TABLE_NAME"
+echo "cleaning connect elastic connector"
+curl -X "DELETE" "http://localhost:28082/connectors/es_sink_""$TABLE_NAME"
 
 # Grafana
-curl -X "DELETE" "http://localhost:3000/api/datasources/name/""$table_name"   --user admin:admin
+echo "cleaning grafana"
+curl -X "DELETE" "http://localhost:3000/api/datasources/name/""$table_name"   --user admin:$grafana_password
 
 # Wire in the new connection path
 echo "\n\nConnecting KSQL->Elastic->Grafana " "$table_name"
