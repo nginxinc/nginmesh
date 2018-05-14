@@ -5,7 +5,7 @@ This repository provides an implementation of a NGINX based service mesh (nginMe
 Please check https://istio.io for a detailed explanation of the service mesh.  
 
 ## Production Status
-The current version of nginMesh is designed to work with Istio release 0.7.2. It should not be used in production environments.  
+The current version of nginMesh is designed to work with Istio release 0.7.1. It should not be used in production environments.  
 
 ## Architecture
 The diagram below depicts how an NGINX sidecar proxy is implemented. Sidecar uses the open source version of NGINX compiled with modules for tracing and monitoring.
@@ -26,7 +26,7 @@ nginMesh requires installation of Istio first.
 
 1. Download and install Istio 0.7.1:
 ```
-curl -L https://git.io/getLatestIstio | ISTIO_VERSION=0.7.2 sh -
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=0.7.1 sh -
 ```
 2. Download nginMesh release 0.7.2:
 ```
@@ -36,7 +36,7 @@ curl -L https://github.com/nginmesh/nginmesh/releases/download/0.7.2/nginmesh-0.
 3. Deploy Istio between sidecars:
 
 ```
-kubectl create -f istio-0.7.2/install/kubernetes/istio.yaml
+kubectl create -f istio-0.7.1/install/kubernetes/istio.yaml
 ```
 
 
@@ -108,7 +108,7 @@ Note: In GKE environment you may need to grant permission to default serviceacco
 ```
 kubectl create serviceaccount --namespace kube-system tiller
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
-kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
+kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller","automountServiceAccountToken": true}}}}'
 ```
 
 5. Wait for a while and make sure all kafka and zookeeper pods are up and runnning:
