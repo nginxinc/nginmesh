@@ -71,7 +71,7 @@ Note: It will use "default" namespace as default, if not set.
 pipenv run mamba --format documentation .
 ```
 ```
-               _                           _
+              _                           _
    _ __   __ _(_)_ __  _ __ ___   ___  ___| |__
   | `_ \ / _  | |  _ \|  _   _ \ / _ \/ __| |_ \
   | | | | (_| | | | | | | | | | |  __/\__ \ | | |
@@ -80,108 +80,132 @@ pipenv run mamba --format documentation .
 
 Testing basic functionality
   Starting test
- | V1 Hit=4 | V2 Hit=2 | V3 Hit=4 | Total Hit=10 |
-  52 requests in 1.02s, 284.10KB read
-Requests/sec:     51.07
-Transfer/sec:    279.03KB
-    ✓ it Testing basic functionality (1.4355 seconds)
+ | V1 Hit=2 | V2 Hit=4 | V3 Hit=4 | Total Hit=10 |
+  44 requests in 1.01s, 232.67KB read
+Requests/sec:     43.58
+Transfer/sec:    230.45KB
+    ✓ it Testing basic functionality (1.4042 seconds)
 
 Testing route all requests to V1
   Set environment
-    ✓ it Add routing rule (5.6113 seconds)
+    ✓ it Add routing rule (5.6762 seconds)
   Starting test
  | V1 Hit=10 | V2 Hit=0 | V3 Hit=0 | Total Hit=10 |
-  63 requests in 1.01s, 281.98KB read
-Requests/sec:     62.25
-Transfer/sec:    278.61KB
-    ✓ it Testing route all requests to V1 (1.3310 seconds)
+  56 requests in 1.02s, 250.66KB read
+Requests/sec:     54.97
+Transfer/sec:    246.05KB
+    ✓ it Testing route all requests to V1 (1.3384 seconds)
   Clean environment
-    ✓ it Delete routing rule (5.5135 seconds)
+    ✓ it Delete routing rule (5.5004 seconds)
 
 Testing route all requests to V3
   Set environment
-    ✓ it Add routing rule (5.4327 seconds)
+    ✓ it Add routing rule (5.4385 seconds)
   Starting test
  | V1 Hit=0 | V2 Hit=0 | V3 Hit=10 | Total Hit=10 |
-  77 requests in 1.01s, 442.68KB read
-Requests/sec:     76.23
-Transfer/sec:    438.27KB
-    ✓ it Testing route all requests to V3 (1.3356 seconds)
+  39 requests in 1.02s, 224.25KB read
+Requests/sec:     38.37
+Transfer/sec:    220.65KB
+    ✓ it Testing route all requests to V3 (1.4494 seconds)
   Clean environment
-    ✓ it Delete routing rule (5.3283 seconds)
+    ✓ it Delete routing rule (5.3219 seconds)
 
 Testing route all requests to V1 and V3
   Set environment
-    ✓ it Add routing rule (5.4259 seconds)
+    ✓ it Add routing rule (5.4349 seconds)
   Starting test
- | V1 Hit=3 | V2 Hit=0 | V3 Hit=7 | Total Hit=10 |
-  71 requests in 1.02s, 359.79KB read
-Requests/sec:     69.57
-Transfer/sec:    352.56KB
-    ✓ it Testing route all requests to V1 and V3 (1.3478 seconds)
+ | V1 Hit=6 | V2 Hit=0 | V3 Hit=4 | Total Hit=10 |
+  48 requests in 1.02s, 251.79KB read
+Requests/sec:     47.10
+Transfer/sec:    247.07KB
+    ✓ it Testing route all requests to V1 and V3 (1.3605 seconds)
   Clean environment
-    ✓ it Delete routing rule (5.3143 seconds)
+    ✓ it Delete routing rule (5.3254 seconds)
 
 Testing destination-weight, route to V1-75%, V2-25%
   Set environment
-    ✓ it Add routing rule (5.4597 seconds)
+    ✓ it Add routing rule (5.4592 seconds)
   Starting test
- | V1 Hit=6 | V2 Hit=4 | V3 Hit=0 | Total Hit=10 |
-  77 requests in 1.01s, 375.28KB read
-Requests/sec:     76.26
-Transfer/sec:    371.68KB
-    ✓ it Bookinfo destination-weight test, route to V1-75%, V2-25% (1.3235 seconds)
+ | V1 Hit=7 | V2 Hit=3 | V3 Hit=0 | Total Hit=10 |
+  57 requests in 1.02s, 265.35KB read
+Requests/sec:     56.16
+Transfer/sec:    261.43KB
+    ✓ it Bookinfo destination-weight test, route to V1-75%, V2-25% (1.3863 seconds)
   Clean environment
-    ✓ it Delete routing rule (5.3187 seconds)
+    ✓ it Delete routing rule (5.3272 seconds)
 
 Testing route all requests to V2 and V3
   Set environment
-    ✓ it Add routing rule (5.4383 seconds)
+    ✓ it Add routing rule (5.4347 seconds)
   Starting test
- | V1 Hit=0 | V2 Hit=1 | V3 Hit=9 | Total Hit=10 |
-  69 requests in 1.02s, 396.80KB read
-Requests/sec:     67.62
-Transfer/sec:    388.85KB
-    ✓ it Testing route all requests to V2 and V3 (1.3597 seconds)
+ | V1 Hit=0 | V2 Hit=4 | V3 Hit=6 | Total Hit=10 |
+  36 requests in 1.03s, 207.05KB read
+Requests/sec:     34.99
+Transfer/sec:    201.25KB
+    ✓ it Testing route all requests to V2 and V3 (1.4698 seconds)
   Clean environment
-    ✓ it Delete routing rule (5.3194 seconds)
+    ✓ it Delete routing rule (5.3268 seconds)
 
 Testing HTTP Redirect
   Set environment
-    ✓ it Add routing rule (5.4329 seconds)
+    ✓ it Add routing rule (5.4378 seconds)
   Starting test
-  179 requests in 1.02s, 25.87KB read
-Requests/sec:    174.77
-Transfer/sec:     25.26KB
-    ✓ it Testing HTTP Redirect (2.2081 seconds)
+  180 requests in 1.02s, 26.02KB read
+Requests/sec:    176.51
+Transfer/sec:     25.51KB
+    ✓ it Testing HTTP Redirect (2.2186 seconds)
   Clean environment
-    ✓ it Delete routing rule (5.3181 seconds)
+    ✓ it Delete routing rule (7.0557 seconds)
 
 Testing HTTP Retry
   Set environment
-    ✓ it Add routing rule (5.4503 seconds)
+    ✓ it Add routing rule (5.4625 seconds)
   Starting test
 Total Retry Hit=10
-  77 requests in 1.02s, 442.68KB read
-Requests/sec:     75.45
-Transfer/sec:    433.79KB
-    ✓ it Testing HTTP Retry (16.0318 seconds)
+  36 requests in 1.02s, 207.00KB read
+Requests/sec:     35.16
+Transfer/sec:    202.14KB
+    ✓ it Testing HTTP Retry (16.0645 seconds)
   Clean environment
-    ✓ it Delete routing rule (5.3102 seconds)
+    ✓ it Delete routing rule (5.4433 seconds)
 
 Testing route "jason" user to V2
   Set environment
-    ✓ it Add routing rule (5.4323 seconds)
+    ✓ it Add routing rule (5.4366 seconds)
   Starting test
  | V1 Hit=0 | V2 Hit=10 | V3 Hit=0 | Total Hit=10 |
-  76 requests in 1.01s, 403.91KB read
-Requests/sec:     75.47
-Transfer/sec:    401.08KB
-    ✓ it Testing route "jason" user to V2 (2.4717 seconds)
+  57 requests in 1.03s, 304.88KB read
+Requests/sec:     55.57
+Transfer/sec:    297.21KB
+    ✓ it Testing route "jason" user to V2 (2.6802 seconds)
   Clean environment
-    ✓ it Delete routing rule (5.3364 seconds)
+    ✓ it Delete routing rule (5.4189 seconds)
 
-25 examples ran in 129.3463 seconds
+Testing Kafka messages
+ | V1 Hit=3 | V2 Hit=4 | V3 Hit=3 | Total Hit=10 |
+  29 requests in 1.02s, 154.05KB read
+Requests/sec:     28.41
+Transfer/sec:    150.90KB
+
+Starting test
+Processed a total of 10 messages
+  ✓ it Testing Kafka functionality (6.5686 seconds)
+
+Zipkin tracing functionality
+  Set environment
+Forwarding from 127.0.0.1:9411 -> 9411
+    ✓ it Add Zipkin tracing feature (20.7318 seconds)
+  Starting Test
+Handling connection for 9411
+ | V1 Hit=3 | V2 Hit=3 | V3 Hit=4 | Total Hit=10 |
+  39 requests in 1.03s, 207.74KB read
+Requests/sec:     38.00
+Transfer/sec:    202.42KB
+    ✓ it Bookinfo Zipkin tracing feature (3.4614 seconds)
+  Clean Environment
+    ✓ it Delete Zipkin tracing feature (14.1853 seconds)
+
+29 examples ran in 164.8122 seconds
 ```
 7. To run selectively, please input one or multiple test cases:
 ```

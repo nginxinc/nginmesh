@@ -20,8 +20,7 @@ with description('Testing route "jason" user to V2'):
         with it('Testing route "jason" user to V2'):
             while self.total_count < self.request_count:
                 cookie={'user':'jason'}
-                u=self.url
-                r = requests.get('http://'+self.GATEWAY_URL+'/productpage', cookies =cookie )
+                r = requests.get('http://'+configuration.GATEWAY_URL+'/productpage', cookies =cookie )
                 expect(r.status_code).to(equal(200))
                 if 'color="black"' not in r.text and 'color="red"' not in r.text:
                     self.total_count += 1
