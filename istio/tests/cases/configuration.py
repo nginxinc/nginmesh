@@ -17,13 +17,6 @@ performance_connection='10'
 performance_duration='1s'
 app_namespace=os.environ.get('app_namespace','default')
 
-# Kafka test dependencies
-kafka_topic="nginmesh"
-kafka_ns="kafka"
-kafka_client_pod_name="testclient"
-kafka_srv_svc="my-kafka-kafka:9092"
-kafka_req_count=40
-
 def run_shell(self,type):
     if type=="check":
         return str(subprocess.check_output(self, universal_newlines=True,shell=True)).rstrip()

@@ -1,4 +1,4 @@
-# NGINX Streaming Architecture with Istio Service Mesh
+# NGINX Architecture with Istio Service Mesh
 This repository provides an implementation of a NGINX based service mesh (nginMesh).  nginMesh is compatible with Istio.  It leverages NGINX as a sidecar proxy. 
 
 ## What is Service Mesh and Istio?
@@ -9,7 +9,6 @@ The current version of nginMesh is designed to work with Istio release 0.7.1. It
 
 ## Architecture
 The diagram below depicts how an NGINX sidecar proxy is implemented. Sidecar uses the open source version of NGINX compiled with modules for tracing and monitoring.
-In 0.7.2 release, nginMesh leverages Kafka for delivery traffic metrics across the Service Mesh. Security features, such as mTLS authentication are planned in upcoming releases.
 
 ![Alt text](/images/nginx_sidecar.png?raw=true "NGINX Sidecar")
 
@@ -21,53 +20,47 @@ Below are instructions to quickly install and configure nginMesh.  Currently, on
 ### Prerequisites
 Make sure you have a Kubernetes cluster with at least 1.9 or greater due to fact only automatic sidecar injection is supported and no alpha feature is enabled. Please see [Prerequisites](https://istio.io/docs/setup/kubernetes/quick-start.html) for setting up a kubernetes cluster.
 
-### Installing Istio and nginMesh
+### Install Istio and nginMesh
 nginMesh requires installation of Istio first.
 
 1. Download and install Istio 0.7.1:
 ```
 curl -L https://git.io/getLatestIstio | ISTIO_VERSION=0.7.1 sh -
 ```
-2. Download nginMesh release 0.7.2:
+2. Download nginMesh release 0.7.1:
 ```
-curl -L https://github.com/nginmesh/nginmesh/releases/download/0.7.2/nginmesh-0.7.2.tar.gz | tar zx
+curl -L https://github.com/nginmesh/nginmesh/releases/download/0.7.1/nginmesh-0.7.1.tar.gz | tar zx
 ```
-
 3. Deploy Istio between sidecars:
-
 ```
 kubectl create -f istio-0.7.1/install/kubernetes/istio.yaml
 ```
-
-
 4. Ensure the following Kubernetes services are deployed: istio-pilot, istio-mixer, istio-ingress:
 ```
 kubectl get svc  -n istio-system  
 ```
 ```
- NAME            CLUSTER-IP      EXTERNAL-IP       PORT(S)                       AGE
-  istio-ingress   10.83.245.171   35.184.245.62     80:32730/TCP,443:30574/TCP    5h
-  istio-pilot     10.83.251.173   <none>            8080/TCP,8081/TCP             5h
-  istio-mixer     10.83.244.253   <none>            9091/TCP,9094/TCP,42422/TCP   5h
+istio-ingress            LoadBalancer   10.47.252.40    35.237.173.47   80:32171/TCP,443:32198/TCP                   19h
+istio-mixer              ClusterIP      10.47.251.225   <none>          9091/TCP,15004/TCP,9093/TCP,9094/TCP,9102/TCP,9125/UDP,42422/TCP    19h
+istio-pilot              ClusterIP      10.47.254.118   <none>          15003/TCP,15005/TCP,15007/TCP,15010/TCP,8080/TCP,9093/TCP,443/TCP   19h
+istio-sidecar-injector   ClusterIP      10.47.242.139   <none>          443/TCP                                       9h
 ```
-
 5. Ensure the following Kubernetes pods are up and running: istio-pilot-* , istio-mixer-* , istio-ingress-*  and istio-initializer-* :
 ```
 kubectl get pods -n istio-system    
 ```
 ```
-  istio-ca-3657790228-j21b9           1/1       Running   0          5h
-  istio-ingress-1842462111-j3vcs      1/1       Running   0          5h
-  istio-pilot-2275554717-93c43        1/1       Running   0          5h
-  istio-mixer-2104784889-20rm8        2/2       Running   0          5h
+istio-ca-86f55cc46f-nprhw                1/1       Running   0          19h
+istio-ingress-5bb556fcbf-c7tgt           1/1       Running   0          19h
+istio-mixer-86f5df6997-fvzjx             3/3       Running   0          19h
+istio-pilot-67d6ddbdf6-xhztz             2/2       Running   0          19h
+istio-sidecar-injector-5b8c78fd6-8dvq6   1/1       Running   0          9h
 ```
-
 6. Automatic sidecar:
 To set up sidecar injection, please run following script which will install Istio webhook with nginMesh customization.
 ```
-nginmesh-0.7.2/install/kubernetes/install-sidecar.sh
+nginmesh-0.7.1/install/kubernetes/install-sidecar.sh
 ```
-
 7. Verify that istio-injection label is not labeled for the default namespace :
 ```
 kubectl get namespace -L istio-injection
@@ -80,93 +73,19 @@ kube-public    Active        1h
 kube-system    Active        1h
 ```
 
-### Kafka deployment using Helm
-
-1. Install the binary release of the Helm client depending on your OS.  Please follow [Setup guide](https://docs.helm.sh/using_helm/#quickstart) for detailed instructions.
-
-2. Install Helm server(Tiller) in Kubernetes cluster:
-```
-helm init
-```
-3. Make sure Tiller is up and running:
-
-```
-kubectl get pods --namespace kube-system
-```
-```
-NAME                                                 READY     STATUS    RESTARTS   AGE
-tiller-deploy-f44659b6c-p48hf                        1/1       Running   0          51m
-```
-
-4. Run the following script to setup Kafka. It will be installed in 'kafka' namespace.  It is also possible to use existing kafka installation.
-
-```
-nginmesh-0.7.2/install/kafka/install.sh
-```
-Note: In GKE environment you may need to grant permission to default serviceaccount for cluster-wide access before install:
-
-```
-kubectl create serviceaccount --namespace kube-system tiller
-kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
-kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller","automountServiceAccountToken": true}}}}'
-```
-
-5. Wait for a while and make sure all kafka and zookeeper pods are up and runnning:
-
-```
-kubectl get pods -n kafka
-```
-```
-NAME                   READY     STATUS    RESTARTS   AGE
-my-kafka-kafka-0       1/1       Running   1          15m
-my-kafka-kafka-1       1/1       Running   0          13m
-my-kafka-kafka-2       1/1       Running   0          12m
-my-kafka-zookeeper-0   1/1       Running   0          15m
-my-kafka-zookeeper-1   1/1       Running   0          14m
-my-kafka-zookeeper-2   1/1       Running   0          14m
-testclient             1/1       Running   0          15m
-```
-6. Check the deployed release status:
-
-```
-helm list
-```
-```
-NAME    	         REVISION	         UPDATED                       	STATUS  	    CHART      	  NAMESPACE
-my-kafka	           1           Tue Mar 27 18:45:18 2018	          DEPLOYED  	 kafka-0.4.7  	   kafka
-```
-
-7. Set up  topic named "nginmesh" by running below script:
-
-```
-nginmesh-0.7.2/tools/kafka-add-topics.sh nginmesh
-```
-8. View created topic by running below script:
-
-```
-nginmesh-0.7.2/tools/kafka-list-topics.sh
-```
-```
-nginmesh
-```
-
 ### Deploy a Sample Application
+
 In this section we deploy the Bookinfo application, which is taken from the Istio samples. Please see [Bookinfo](https://istio.io/docs/guides/bookinfo.html)  for more details.
 
 1. Label the default namespace with istio-injection=enabled:
-
 ```
 kubectl label namespace default istio-injection=enabled
 ```
-
 2. Deploy the application:
-
 ```
-kubectl apply -f  nginmesh-0.7.2/samples/bookinfo/kube/bookinfo.yaml
+kubectl apply -f  istio-0.7.1/samples/bookinfo/kube/bookinfo.yaml
 ```
-
 3. Confirm that all application services are deployed: productpage, details, reviews, ratings:
-
 ```
 kubectl get services
 ```
@@ -178,7 +97,6 @@ productpage                10.0.0.120   <none>        9080/TCP             6m
 ratings                    10.0.0.15    <none>        9080/TCP             6m
 reviews                    10.0.0.170   <none>        9080/TCP             6m
 ```
-
 4. Confirm that all application pods are running --details-v1-* , productpage-v1-* , ratings-v1-* , reviews-v1-* , reviews-v2-* and reviews-v3-* :
 ```
 kubectl get pods
@@ -192,68 +110,39 @@ reviews-v1-874083890-f0qf0                  2/2       Running   0          6m
 reviews-v2-1343845940-b34q5                 2/2       Running   0          6m
 reviews-v3-1813607990-8ch52                 2/2       Running   0          6m
 ```
-
 5. Get the public IP of the Istio Ingress controller. If the cluster is running in an environment that supports external load balancers:
-
 ```
 kubectl get svc -n istio-system | grep -E 'EXTERNAL-IP|istio-ingress'
 ```
-
 OR
-
 ```
 kubectl get ingress -o wide       
 ```
-
 6. Open the Bookinfo application in a browser using the following link:
 ```
 http://<Public-IP-of-the-Ingress-Controller>/productpage
 ```
+Note 1: For E2E routing rules and performace testing you could refer to [E2E Test](istio/tests/README.md).
+Note 2: Alternatively, you could install NGINX MRA Application, refer to [Ingenious](istio/release/samples/ingenious/kube/README.md).
 
-Note: For E2E routing rules and performace testing you could refer to [E2E Test](istio/tests/README.md).
 
-### Demo nginMesh streaming using Graylog
-1. [Demo Graylog](istio/release/demo/graylog/README.md) Please, refer for Graylog integration with nginMesh.
-2. [Demo KSQL](istio/release/demo/ksql/README.md) Please, refer for KSQL integration with nginMesh.
+### Uninstall the Application
 
-### Uninstalling the Application
 1. To uninstall application, run:
-
 ```
-./nginmesh-0.7.2/samples/bookinfo/kube/cleanup.sh
+./istio-0.7.1/samples/bookinfo/kube/cleanup.sh
 ```
 
+### Uninstall Istio
 
-### Uninstalling Istio
 1. To uninstall the Istio core components:
-
 ```
 kubectl delete -f istio-0.7.1/install/kubernetes/istio.yaml
 ```
-
-
 2. To uninstall the initializer, run:
-
 ```
-nginmesh-0.7.2/install/kubernetes/delete-sidecar.sh
+nginmesh-0.7.1/install/kubernetes/delete-sidecar.sh
 ```
-
-### Uninstalling Kafka
-
-1. Uninstall Kafka:
-
-```
-nginmesh-0.7.2/install/kafka/uninstall.sh
-``` 
-
-2. Delete Tiller deployment:
-
-```
-kubectl delete deployment tiller-deploy --namespace kube-system
-```
-
- 
-
 
 ## Limitations
 nginMesh has the following limitations:

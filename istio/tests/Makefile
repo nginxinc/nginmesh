@@ -1,5 +1,5 @@
 KUBE_VERSION=v1.9.4
-NGINMESH_VERSION=0.6.0
+NGINMESH_VERSION=0.8.0
 WRK_VERSION=3.1.0
 GIT_COMMIT=$(shell git rev-parse --short HEAD)
 TEST_IMAGE_NAME=bookinfo_testing

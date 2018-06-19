@@ -181,16 +181,6 @@ Transfer/sec:    297.21KB
   Clean environment
     ✓ it Delete routing rule (5.4189 seconds)
 
-Testing Kafka messages
- | V1 Hit=3 | V2 Hit=4 | V3 Hit=3 | Total Hit=10 |
-  29 requests in 1.02s, 154.05KB read
-Requests/sec:     28.41
-Transfer/sec:    150.90KB
-
-Starting test
-Processed a total of 10 messages
-  ✓ it Testing Kafka functionality (6.5686 seconds)
-
 Zipkin tracing functionality
   Set environment
 Forwarding from 127.0.0.1:9411 -> 9411
@@ -205,7 +195,7 @@ Transfer/sec:    202.42KB
   Clean Environment
     ✓ it Delete Zipkin tracing feature (14.1853 seconds)
 
-29 examples ran in 164.8122 seconds
+28 examples ran in 164.8122 seconds
 ```
 7. To run selectively, please input one or multiple test cases:
 ```

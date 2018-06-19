@@ -122,7 +122,6 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	client := pilot.NewClient(*discoveryAddress, &http.Client{}, *serviceCluster, serviceNode, podIP,*collectorAddress,*collectorTopic)
-	glog.Info("collector address: %v, topic: %v",*collectorAddress,*collectorTopic)
 	pilotWatcher := pilot.NewWatcher(client, 5*time.Second)
 	go pilotWatcher.Run(ctx)
 

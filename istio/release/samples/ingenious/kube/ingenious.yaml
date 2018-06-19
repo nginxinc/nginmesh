@@ -1,0 +1,409 @@
+###########################################################################
+# Ingress resource (gateway)
+##########################################################################
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gateway
+  annotations:
+    kubernetes.io/ingress.class: "istio"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /.*
+        backend:
+          serviceName: auth-proxy
+          servicePort: 80
+---
+# Fake-S3
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: fake-s3
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fake-s3
+    spec:
+      containers:
+      - name: fake-s3
+        image: docker.io/lphoward/fake-s3:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 4569
+          name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fake-s3
+  labels:
+    app: fake-s3
+  namespace: default
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 4569
+    name: http
+  selector:
+    app: fake-s3
+---
+#User-manager
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    metadata:
+      name: user-manager
+      namespace: default
+    spec:
+      replicas: 1
+      template:
+        metadata:
+          labels:
+            app: user-manager
+        spec:
+          containers:
+          - name: user-manager
+            image: sahriyarm/user-manager:latest
+            imagePullPolicy: Always
+            ports:
+            - containerPort: 80
+              name: http
+            env:
+            - name: DB_ENDPOINT
+              value: http://localhost:8000
+            - name: AWS_ACCESS_KEY_ID
+              value: nginxnginxnginxnginx
+            - name: AWS_SECRET_ACCESS_KEY
+              value: nginxnginxnginxnginxnginxnginxnginxnginx
+            - name: ALBUM_MANAGER_URL
+              value: http://album-manager/albums
+            - name: AWS_DEFAULT_REGION
+              value: us-west-1
+            - name: VERIFY_CERTS
+              value: "False"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-manager
+  labels:
+    app: user-manager
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: user-manager
+---
+#Content-service
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: content-service
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: content-service
+    spec:
+      containers:
+      - name: content-service
+        image: sahriyarm/content-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: http
+        env:
+        - name: RETHINKDB_URL
+          value: "localhost:28015"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: content-service
+  labels:
+    app: content-service
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: content-service
+---
+# Album-manager
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: album-manager
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: album-manager
+    spec:
+        containers:
+        - name: album-manager
+          image: sahriyarm/album-manager:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+            name: http
+          env:
+          - name: DATABASE_HOST
+            value: localhost
+          - name: DATABASE_PASSWORD
+            value: ""
+          - name: DATABASE_USERNAME
+            value: root
+          - name: PORT
+            value: "3306"
+          - name: UPLOADER_PHOTO
+            value: "http://photouploader/image/uploads/photos/"
+          - name: RACK_ENV
+            value: production
+          - name: MYSQL_DATABASE
+            value: album_manager
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: album-manager
+  labels:
+    app: album-manager
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: album-manager
+
+---
+# Photo-uploader
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: photouploader
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: photouploader
+    spec:
+        containers:
+        - name: photouploader
+          image: sahriyarm/photouploader:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+            name: http
+          env:
+          - name: S3_BUCKET
+            value: k8s-mra-nginx
+          - name: AWS_ACCESS_KEY_ID
+            value: nginxnginxnginxnginx
+          - name: AWS_SECRET_ACCESS_KEY
+            value: nginxnginxnginxnginxnginxnginxnginxnginx
+          - name: AWS_REGION
+            value: us-west-1
+          - name: RESIZER_URL
+            value: http://photoresizer/v1/image
+          - name: ALBUM_MANAGER_URL
+            value: http://album-manager
+          - name: S3_URL
+            value: "http://fake-s3"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: photouploader
+  labels:
+    app: photouploader
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: photouploader
+
+---
+# Photoresizer
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: photoresizer
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: photoresizer
+    spec:
+      containers:
+      - name: photoresizer
+        image: sahriyarm/photoresizer:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: http
+        env:
+        - name: S3_BUCKET
+          value: k8s-mra-nginx
+        - name: AWS_ACCESS_KEY_ID
+          value: nginxnginxnginxnginx
+        - name: AWS_SECRET_ACCESS_KEY
+          value: nginxnginxnginxnginxnginxnginxnginxnginx
+        - name: AWS_REGION
+          value: us-west-1
+        - name: S3_URL
+          value: "http://fake-s3"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: photoresizer
+  labels:
+    app: photoresizer
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: photoresizer
+---
+#Pages
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: pages
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pages
+    spec:
+      containers:
+      - name: pages
+        image: sahriyarm/pages:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: http
+        env:
+        - name: CONTENTSERVICE_ENDPOINT_URL
+          value: http://localhost
+        - name: CONTENTSERVICE_ARTICLE_PATH
+          value: /content-service/v1/content
+        - name: PHOTOMANAGER_ENDPOINT_URL
+          value: http://localhost
+        - name: USERMANAGER_ENDPOINT_URL
+          value: http://localhost
+        - name: PHOTOMANAGER_CATALOG_PATH
+          value: /album-manager/albums
+        - name: PHOTOMANAGER_ALBUM_PATH
+          value: /album-manager/albums
+        - name: PHOTOUPLOADER_IMAGE_PATH
+          value: /photouploader/image
+        - name: USERMANAGER_USER_PATH
+          value: /user-manager/v1/users
+        - name: PHOTOUPLOADER_ENDPOINT_URL
+          value: http://localhost
+        - name: PHOTOUPLOADER_ALBUM_PATH
+          value: /photouploader/album
+        - name: PHOTOMANAGER_IMAGES_PATH
+          value: /album-manager/images
+        - name: USERMANAGER_LOCAL_PATH
+          value: /user-manager/v1/users
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: pages
+  labels:
+    app: pages
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+  selector:
+    app: pages
+
+---
+# Auth-proxy
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: auth-proxy
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: auth-proxy
+    spec:
+      containers:
+      - name: auth-proxy
+        image: sahriyarm/auth-proxy:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: http
+        env:
+        - name: PAGES_URL
+          value: pages
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-proxy
+  labels:
+    app: auth-proxy
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: auth-proxy
+---
+
+

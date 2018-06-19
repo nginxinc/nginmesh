@@ -43,7 +43,7 @@ server {
 
     server_name {{range $name := $server.Names}} {{$name}}{{end}};
 
-    {{if $.Mixer}}
+ {{if $.Mixer}}
 #    collector_destination_ip  {{$.Mixer.DestinationIP}};
 #    collector_destination_uid {{$.Mixer.DestinationUID}};
     {{if $.Mixer.DestinationService}}
@@ -52,6 +52,7 @@ server {
 #    collector_source_ip {{$.Mixer.SourceIP}};
 #    collector_source_uid {{$.Mixer.SourceUID}};
     {{end}}
+
 
     {{range $location := $server.Locations}}
     location {{$location.Path}} {
@@ -66,6 +67,7 @@ server {
         collector_report {{$location.CollectorTopic}};
         {{end}}
         {{end}}
+
 
        
         {{if $location.Tracing}}
@@ -85,16 +87,15 @@ server {
         
         {{if $location.Upstream}}
         proxy_set_header Host {{if $location.Host}}{{$location.Host}}{{else}}$host{{end}};
+
         {{if $.Mixer}}
-        
         {{if $.Mixer.SourceIP}}
         proxy_set_header X-ISTIO-SRC-IP {{$.Mixer.SourceIP}};
         {{end}}
-
+        
         {{if $.Mixer.SourceUID}}
         proxy_set_header X-ISTIO-SRC-UID {{$.Mixer.SourceUID}};
         {{end}}
-
         {{end}}
 
         # WebSocket and KeepAlives
@@ -129,9 +130,7 @@ server {
     }{{end}}
 }{{end}}`
 
-const mainTemplate = `load_module /etc/nginx/modules/ngx_http_collector_module.so;
-load_module /etc/nginx/modules/ngx_stream_nginmesh_dest_module.so;
-
+const mainTemplate = `load_module /etc/nginx/modules/ngx_stream_nginmesh_dest_module.so;
 
 load_module /etc/nginx/modules/ngx_http_opentracing_module.so;
 load_module /etc/nginx/modules/ngx_http_zipkin_module.so;
@@ -195,7 +194,8 @@ http {
     server_names_hash_bucket_size 128;
     variables_hash_bucket_size 128;
 
-    collector_server {{.CollectorServer}};
+  #  collector_server {{.CollectorServer}};
+
 
     # Support for Websocket
     map $http_upgrade $connection_upgrade {
@@ -210,23 +210,17 @@ stream {
     log_format basic '$remote_addr [$time_local] '
                      '$protocol $status $bytes_sent $bytes_received '
                      '$session_time $nginmesh_dest $nginmesh_server';
-
     map $nginmesh_dest $nginmesh_server {
         {{range $dm := .DestinationMaps}}
         {{- $dm.Remote}} {{$dm.Local}};
         {{end}}
     }
-
     server {
         listen 15001;
         access_log /dev/stdout basic;
         nginmesh_dest on;
-
         proxy_pass $nginmesh_server;
-
-
     }
-
     include /etc/istio/proxy/conf.d/*.stream-conf;
 }`
 

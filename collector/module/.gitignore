@@ -1,8 +1,0 @@
-target
-.idea
-.vscode
-nginx
-u1.*
-make.out
-grpc-rust
-ngx-rust
