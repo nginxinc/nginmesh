@@ -56,10 +56,11 @@ type VirtualServerSSL struct {
 type HTTPMixer struct {
 	SourceIP           string
 	SourceUID          string
+	SourceLabels	   map[string]string
 	DestinationIP      string
 	DestinationService string
 	DestinationUID     string
-	QuotaName          string
+	DestinationLabels  map[string]string
 }
 
 // MainMixer is the global Mixer configuration.

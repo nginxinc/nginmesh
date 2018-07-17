@@ -11,7 +11,7 @@ import (
 func TestUnmarshal(t *testing.T) {
 
 	pwd, _ := os.Getwd()
-	body, ferr := ioutil.ReadFile(pwd+"/test/0.3.0/listener.json")
+	body, ferr := ioutil.ReadFile(pwd+"/test/0.7.1/listener.json")
 	if ferr != nil {
 		fmt.Printf("could not load file")
 		t.Error(ferr)
@@ -23,14 +23,14 @@ func TestUnmarshal(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
-	if len(listeners) !=18 {
-		t.Error("there should been 18 listener founded")
+	fmt.Println(len(listeners))
+	if len(listeners) != 23 {
+		t.Error("there should been 23 listener founded")
 	}
 
 	for _, listener := range listeners {
-		if listener.Address == "tcp://10.40.1.19:9080" {
-			
+		if listener.Address == "tcp://0.0.0.0:15007" {
+
 			filters := listener.Filters
 			if len(filters) == 0  {
 				t.Error("no filter founded")
@@ -57,12 +57,17 @@ func TestUnmarshal(t *testing.T) {
 			}
 
 			httpFilter := httpFilters[0]
-
+			// fmt.Printf("Filters: %+v\n", httpFilter)
+			fmt.Printf("config: %+v\n", string(httpFilter.Config))
 			if httpFilter.FilterMixerConfig == nil {
 				t.Error("no mixer config founded")
 			}
 
 			mixerConfig := httpFilter.FilterMixerConfig
+			fmt.Printf("mixerConfig: %+v\n", mixerConfig)
+			fmt.Printf("mixerConfig: %+v\n", mixerConfig.DestinationService)
+			fmt.Printf("mixer attributes: %+v\n", mixerConfig.ForwardAttributes.Attributes.SourceLabels.StringMapValue.Entries)
+			fmt.Printf("service configs: %+v\n", mixerConfig.ServiceConfig[mixerConfig.DestinationService])
 
 			if mixerConfig.MixerAttributes == nil {
 				t.Error("no mixer attributes founded")
@@ -77,32 +82,21 @@ func TestUnmarshal(t *testing.T) {
 				t.Error("no attributes for mixer attributes founded")
 			}
 
-			mixerAttributeDetail := mixerAttributres.Attributes
-
-			if mixerAttributeDetail.DestinationIp == nil {
-				t.Error("no destination ip founded")
+			ForwardAttributes := mixerConfig.ForwardAttributes
+			if ForwardAttributes.Attributes == nil {
+				t.Error("no attributes for forward attributes founded")
 			}
 
-			if mixerAttributeDetail.DestinationIp.BytesValue != "AAAAAAAAAAAAAP//CigBEw==" {
-				t.Error("destination ip not same")
-			}
+			fmt.Printf("Source IP: %+v\n", ForwardAttributes.Attributes.SourceIp.BytesValue)
 
-			if mixerAttributeDetail.DestinationUid == nil {
-				t.Error("no destination Uid founded")
-			}
-
-			if mixerAttributeDetail.DestinationUid.StringValue != "kubernetes://productpage-v1-5fb67b856-6r5f2.default" {
-				t.Error("destination uid not same")
-			}
-		
 			return
 		}
 
 
 	}
 
-	t.Error("no listener 10.40.1.19:9080 founded")
-	
+	// t.Error("no listener 10.40.1.19:9080 founded")
+
 	/*
 	if listeners[1].Filters[0].TCPProxyFilterConfig == nil {
 		t.Error("TCPProxyFilterConfig is nil for the tcp filter")

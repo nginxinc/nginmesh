@@ -7,6 +7,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"net"
 
 	"github.com/nginmesh/nginmesh/istio/agent/pilot"
 	"github.com/golang/glog"
@@ -63,7 +64,7 @@ func (conv *Converter) Convert(proxyConfig pilot.ProxyConfig) Config {
 func buildMixerConfig(proxyConfig pilot.ProxyConfig, httpConfigs []HTTPConfig) *MainMixer {
 	var mixer *MainMixer
 
-	if mixerCluster, exists := proxyConfig.Clusters["mixer_server"]; exists {
+	if mixerCluster, exists := proxyConfig.Clusters["mixer_report_server"]; exists {
 		if len(mixerCluster.Hosts) > 0 {
 			addr, port := parseDestination(mixerCluster.Hosts[0].URL)
 			for _, cfg := range httpConfigs {
@@ -238,53 +239,78 @@ func (conv *Converter) convertHTTPListener(listener pilot.Listener, proxyConfig 
 
 			var sourceIp string
 			var sourceUid string
+			var sourceLabels map[string]string
 			var destinationIp string
 			var destinationUid string
 			var destinationService string
+			var destinationLabels map[string]string
 
+			if filterMixerConfig.DestinationService != "" {
+				destinationService = filterMixerConfig.DestinationService
+			}
+
+			// Get source ip, source labels, and source uid
 			if filterMixerConfig.ForwardAttributes != nil {
+				glog.Info("has forward attributes")
 				forwardAttributes := cf.FilterMixerConfig.ForwardAttributes.Attributes
 
 				if forwardAttributes.SourceIp != nil {
-					sourceIp = forwardAttributes.SourceIp.BytesValue
-					//glog.Info("detected sourceIp: %s",sourceIp)
+					sourceIp = (net.IP(forwardAttributes.SourceIp.BytesValue)).String()
 				}
-	
+
+				if forwardAttributes.SourceLabels != nil {
+					sourceLabels = forwardAttributes.SourceLabels.StringMapValue.Entries
+				}
+
 				if forwardAttributes.SourceUid != nil {
 					sourceUid = forwardAttributes.SourceUid.StringValue
-					//glog.Info("detected source Uid: %s",sourceUid)
 				}
 			}
 
+			// Get destination information if mixer attributes present
 			if filterMixerConfig.MixerAttributes != nil {
-				// glog.Info("has mixer attributes")
+				glog.Info("has mixer attributes")
 				mixerAttributes := cf.FilterMixerConfig.MixerAttributes.Attributes
-				
+
+
 				if mixerAttributes.DestinationIp != nil {
-					sourceIp = mixerAttributes.DestinationIp.BytesValue
+					sourceIp = (net.IP(mixerAttributes.DestinationIp.BytesValue)).String()
 				}
-				
+
 				if mixerAttributes.DestinationUid != nil {
 					destinationUid = mixerAttributes.DestinationUid.StringValue
 				}
-
-				
-				if mixerAttributes.DestinationService != nil {
-					destinationService = mixerAttributes.DestinationService.StringValue
-				}
 			}
-			
 
-			
+				// Get Destnation labels, destination service
+			if len(filterMixerConfig.ServiceConfig) > 0 {
+
+				destinationAttributes := filterMixerConfig.ServiceConfig[filterMixerConfig.DestinationService].
+					MixerAttributes.Attributes
+
+					if destinationAttributes.DestinationLabels != nil {
+						destinationLabels = destinationAttributes.DestinationLabels.StringMapValue.Entries
+					}
+
+					if destinationAttributes.DestinationService != nil {
+						destinationService = destinationAttributes.DestinationService.StringValue
+					}
+
+			}
+
+
+
 
 			mixer = HTTPMixer{
-				SourceIP:          sourceIp,
-				SourceUID:         sourceUid,
-				DestinationIP:     destinationIp,
-				DestinationUID:    destinationUid,
+				SourceIP:           sourceIp,
+				SourceUID:          sourceUid,
+				SourceLabels:	    sourceLabels,
+				DestinationIP:      destinationIp,
+				DestinationUID:     destinationUid,
 				DestinationService: destinationService,
-				QuotaName:          cf.FilterMixerConfig.QuotaName,
+				DestinationLabels:	destinationLabels,
 			}
+
 			break
 		}
 	}

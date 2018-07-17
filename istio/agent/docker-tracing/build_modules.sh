@@ -36,6 +36,7 @@ wget -O nginx-release-$NGINX_VERSION.tar.gz https://github.com/nginx/nginx/archi
 tar zxf nginx-release-$NGINX_VERSION.tar.gz
 cd nginx-release-$NGINX_VERSION
 auto/configure \
+        --with-debug \
         --with-compat \
         --add-dynamic-module=${TEMP_DIR}/nginx-opentracing/opentracing \
         --add-dynamic-module=${TEMP_DIR}/nginx-opentracing/zipkin

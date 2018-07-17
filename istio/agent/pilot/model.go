@@ -800,30 +800,40 @@ type KeyAndService struct {
 }
 
 type BytesValue struct {
-	BytesValue	string	`json:"bytesValue,omitempty"`
+	BytesValue	[]byte	`json:"bytesValue,omitempty"`
 }
-
-
 
 type StringValue struct {
 	StringValue	string	`json:"stringValue,omitempty"`
 }
 
+type StringMapValue struct {
+	StringMapValue *entries `json:"stringMapValue,omitempty"`
+}
 
+type entries struct {
+	Entries map[string]string `json:"entries,omitempty"`
+}
 
+type ServiceConfig struct {
+	DisableCheckCalls	bool			 `json:"DisableReportCalls,omitempty"`
+	DisableReportCalls	bool			 `json:"DisableReportCalls,omitempty"`
+	MixerAttributes		*AttributeConfig `json:"mixerAttributes"`
+}
 
 type Attributes struct {
-	SourceIp 		*BytesValue 	`json:"source.ip,omitempty"`
-	SourceUid 		*StringValue 	`json:"source.uid,omitempty"`
-	DestinationIp 	*BytesValue 	`json:"destination.ip,omitempty"`
-	DestinationUid *StringValue 	`json:"destination.uid,omitempty"`
-	DestinationService *StringValue 	`json:"destination.service,omitempty"`
+	SourceIp 			*BytesValue 		`json:"source.ip,omitempty"`
+	SourceUid 			*StringValue 		`json:"source.uid,omitempty"`
+	SourceLabels		*StringMapValue		`json:"source.labels,omitempty"`
+	DestinationIp 		*BytesValue 		`json:"destination.ip,omitempty"`
+	DestinationUid  	*StringValue 		`json:"destination.uid,omitempty"`
+	DestinationService  *StringValue 	`json:"destination.service,omitempty"`
+	DestinationLabels	*StringMapValue `json:"destination.labels,omitempty"`
 }
 
 type AttributeConfig struct {
 	Attributes *Attributes `json:"attributes,omitempty"`
 }
-
 
 // FilterMixerConfig definition
 type FilterMixerV2Config struct {
@@ -832,6 +842,7 @@ type FilterMixerV2Config struct {
 }
 
 type FilterMixerConfig struct {
+	DestinationService string `json:"defaultDestinationService"`
 	// MixerAttributes specifies the static list of attributes that are sent with
 	// each request to Mixer.
 	MixerAttributes *AttributeConfig `json:"mixerAttributes"`
@@ -840,10 +851,19 @@ type FilterMixerConfig struct {
 	// are forwarded as an HTTP header to the server side proxy
 	ForwardAttributes *AttributeConfig `json:"forwardAttributes"`
 
-	// QuotaName specifies the name of the quota bucket to withdraw tokens from;
-	// an empty name means no quota will be charged.
-	QuotaName string `json:"quota_name,omitempty"`
+	// Service config that contains a list of attributes for a specified service
+	// May contain multiple services, so config is a map to ServiceConfig
+	ServiceConfig map[string]ServiceConfig
 
-	// If set to true, disables mixer check calls for TCP connections
-	DisableTCPCheckCalls bool `json:"disable_tcp_check_calls,omitempty"`
+	// Raw json used to hold ServiceConfig json
+	// Created because Unmarshaller cannot unmarshal dynamic values automatically
+	Config		*json.RawMessage	`json:"serviceConfigs"`
+
+	// Named values of mixer report and mixer check
+	Transport	*TransportConfig `json:"transport"`
+}
+
+type TransportConfig struct {
+	CheckCluster	string 	`json:"checkCluster,omitempty`
+	ReportCluster	string	`json:"reportCluster,omitempty`
 }

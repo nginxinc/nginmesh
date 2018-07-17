@@ -71,6 +71,8 @@ data:
         - {{ .ProxyConfig.ProxyAdminPort }}
         - --ngxLogLevel
         - {NGX_LOG_LEVEL}
+        - --v
+        - {AGENT_LOG_LEVEL}
         env:
         - name: POD_NAME
           valueFrom:

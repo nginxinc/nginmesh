@@ -177,8 +177,16 @@ func finishUnmarshallingListeners(listeners Listeners) error {
 					if err != nil {
 						return fmt.Errorf("couldn't unmarshal FilterMixerConfig: %v", err)
 					}
-		
+
+					dec := json.NewDecoder(strings.NewReader(string(*mixerConfig.V2.Config)))
+
+					err := dec.Decode(&mixerConfig.V2.ServiceConfig)
+					if err != nil {
+						return fmt.Errorf("couldn't unmarshal ServiceConfigs: %v", err)
+					}
+
 					httpConfig.Filters[i].FilterMixerConfig = mixerConfig.V2
+
 				} else if httpConfig.Filters[i].Type == "decoder" && httpConfig.Filters[i].Name == "fault" {
 					var faultConfig FilterFaultConfig
 					err = json.Unmarshal(httpConfig.Filters[i].Config, &faultConfig)

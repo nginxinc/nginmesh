@@ -38,7 +38,6 @@ func (w *Watcher) Run(ctx context.Context) {
 			return
 		case <-time.After(w.refreshInterval):
 			cfg := w.client.GetConfig()
-			glog.V(2).Info("%+v\n", cfg)
 			if !reflect.DeepEqual(cfg, oldConfig) {
 				glog.V(2).Info("Configuration in Pilot has been changed")
 				w.configCh <- cfg

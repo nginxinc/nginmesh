@@ -13,7 +13,7 @@ DOCKER_PUSH = gcloud docker -- push
 BUILD_DIR=build
 
 
-release: REPO=sahriyarm
+release: REPO=<Add Your Docker Hub Repo>
 release: TAG=$(VERSION)
 release: DOCKER_PUSH = docker push
 

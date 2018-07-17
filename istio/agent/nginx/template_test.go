@@ -127,7 +127,6 @@ func TestTemplate(t *testing.T) {
 			DestinationUID:     "kubernetes://productpage",
 			SourceIP:           "10.24.0.62",
 			SourceUID:          "kubernetes://productpage",
-			QuotaName:          "RequestCount",
 		},
 		Maps: []Map{
 			Map{
