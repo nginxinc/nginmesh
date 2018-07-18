@@ -1,5 +1,5 @@
-VERSION=0.8.0
-REPO=nginmesh
+VERSION=0.7.1
+REPO=nginxinc
 USER=nginmesh
 RELEASE_FILE=nginmesh-${VERSION}
 RELEASE_DIR=target
@@ -14,18 +14,17 @@ release_tar:    clean_release
 	cp -r samples ${RELEASE_DIR}/${RELEASE_FILE}
 	cp -r install ${RELEASE_DIR}/${RELEASE_FILE}
 	cp -r tools ${RELEASE_DIR}/${RELEASE_FILE}
-	cp -r demo ${RELEASE_DIR}/${RELEASE_FILE}
 	rm -rf ${RELEASE_DIR}/${RELEASE_FILE}/install/kubernetes/.gitignore
 	rm -rf ${RELEASE_DIR}/${RELEASE_FILE}/install/kubernetes/generated
 	rm -rf ${RELEASE_DIR}/${RELEASE_FILE}/install/kubernetes/*.bak
 	cd ${RELEASE_DIR};tar -czvf ${RELEASE_FILE}.tar.gz ${RELEASE_FILE}
 
 create_release:
-	github-release release \
+    github-release release \
     --user ${USER} \
     --repo ${REPO} \
     --tag ${VERSION} \
-	--name "${VERSION}" \
+    --name "${VERSION}" \
     --description "[RELEASE NOTE](https://github.com/nginmesh/nginmesh/wiki/v${VERSION})"
 
 upload_release:
@@ -39,7 +38,7 @@ upload_release:
 
 
 delete_release:
-	github-release delete \
+    github-release delete \
     --user ${USER} \
     --repo ${REPO} \
     --tag ${VERSION}

@@ -4,10 +4,10 @@
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 set -x
 mkdir -p $SCRIPTDIR/generated
-NGINMESH_IMAGE_HUB=${1:-gcr.io}
+NGINMESH_IMAGE_HUB=${1:-nginxinc}
 NGX_LOG_LEVEL=${2:-debug}
 AGENT_LOG_LEVEL=${3:-1}
-NGINMESH_VERSION=0.2.0
+NGINMESH_VERSION=${4:-0.7.1}
 ISTIO_PROXY_INIT=docker.io/istio/proxy_init:0.7.1
 echo "generating sidecar config"
 NGINMESH_CONFIG_NAME=nginmesh-sidecar-injector-configmap.yaml

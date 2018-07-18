@@ -39,7 +39,7 @@ data:
           privileged: true
       containers:
       - name: istio-proxy
-        image: nginxinc/nginmesh_proxy_debug:0.7.1
+        image: {NGINMESH_IMAGE_HUB}/nginmesh_proxy_debug:{NGINMESH_VERSION}
         args:
         - proxy
         - sidecar
