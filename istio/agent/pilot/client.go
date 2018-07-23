@@ -35,7 +35,7 @@ type ProxyConfig struct {
 // NewClient creates a new Client.
 func NewClient(endpoint string, httpClient *http.Client, serviceNode string, serviceCluster string, podIP string,
 	collectorAddress string,collectorTopic string) *Client {
-	return &Client{fmt.Sprintf("http://%v", endpoint), httpClient, serviceNode, serviceCluster, podIP,collectorAddress,collectorTopic}
+	return &Client{endpoint, httpClient, serviceNode, serviceCluster, podIP,collectorAddress,collectorTopic}
 }
 
 func (c *Client) getListeners() (Listeners, error) {
@@ -53,7 +53,6 @@ func (c *Client) getListeners() (Listeners, error) {
 	if glog.V(3) {
 		glog.Infof("Response from %v: %v", url, string(body))
 	}
-	//glog.Infof("Response from %v: %v", url, string(body))
 
 	return unMarshalListeners(body)
 }
@@ -213,7 +212,7 @@ func finishUnmarshallingListeners(listeners Listeners) error {
 }
 
 // GetConfig returns configuration for a sidecar proxy from Pilot.
-func (c *Client) GetConfig() ProxyConfig {
+func (c *Client) GetConfig() (ProxyConfig, error) {
 	cfg := ProxyConfig{
 		HTTPListeners:    make(map[string]Listener),
 		TCPListeners:     make(map[string]Listener),
@@ -224,7 +223,7 @@ func (c *Client) GetConfig() ProxyConfig {
 
 	listeners, err := c.getListeners()
 	if err != nil {
-		glog.Fatalf("Error getting listeners: %v", err)
+		return cfg, fmt.Errorf("Error getting listeners: %v", err)
 	}
 
 	for _, l := range listeners {
@@ -259,7 +258,7 @@ func (c *Client) GetConfig() ProxyConfig {
 
 	clusters, err := c.getClusters()
 	if err != nil {
-		glog.Fatalf("Couldn't get clusters from Pilot: %v", err)
+		return cfg, fmt.Errorf("Couldn't get clusters from Pilot: %v", err)
 	}
 
 	podServiceSet := make(map[string]bool)
@@ -284,7 +283,7 @@ func (c *Client) GetConfig() ProxyConfig {
 		}
 		hosts, err := c.getHostsForService(cluster.ServiceName)
 		if err != nil {
-			glog.Fatalf("Couldn't get hosts of service %v from Pilot: %v", cluster.ServiceName, err)
+			return cfg, fmt.Errorf("Couldn't get hosts of service %v from Pilot: %v", cluster.ServiceName, err)
 		}
 		cfg.Services[cluster.Name] = hosts
 		for _, h := range hosts.Hosts {
@@ -303,7 +302,7 @@ func (c *Client) GetConfig() ProxyConfig {
 
 	cfg.TargetService = strings.Join(podServices, ",")
 
-	return cfg
+	return cfg, nil
 }
 
 func parseDestination(dest string) (string, string) {

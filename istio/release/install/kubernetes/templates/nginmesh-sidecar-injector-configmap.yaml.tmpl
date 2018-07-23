@@ -69,6 +69,8 @@ data:
         - {{ .ProxyConfig.StatsdUdpAddress }}
         - --proxyAdminPort
         - {{ .ProxyConfig.ProxyAdminPort }}
+        - --controlPlaneAuthPolicy
+        - {{ .ProxyConfig.ControlPlaneAuthPolicy }}
         - --ngxLogLevel
         - {NGX_LOG_LEVEL}
         - --v

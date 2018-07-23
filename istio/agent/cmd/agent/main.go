@@ -4,8 +4,12 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"net/http"
 	"os"
+	"strings"
+	"io/ioutil"
+	"net/http"
+	"crypto/tls"
+	"crypto/x509"
 	"os/signal"
 	"syscall"
 	"time"
@@ -29,7 +33,7 @@ func main() {
 	proxySidecarCmd.String("connectTimeout", "", "Binary path")
 	proxySidecarCmd.String("statsdUdpAddress", "", "Binary path")
 	proxySidecarCmd.String("proxyAdminPort", "", "Binary path")
-	proxySidecarCmd.String("controlPlaneAuthPolicy", "", "Binary path")
+	authPolicy := proxySidecarCmd.String("controlPlaneAuthPolicy", "", "Binary path")
 	collectorAddress := proxySidecarCmd.String("collectorAddress","","Collector address")
 	collectorTopic := proxySidecarCmd.String("collectorTopic","","Collector topic")
 	logLevel := proxySidecarCmd.String("ngxLogLevel","","NGINX Log Level")
@@ -69,7 +73,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	
+
 
 	podIP := os.Getenv("INSTANCE_IP")
 	if podIP == "" {
@@ -105,7 +109,7 @@ func main() {
 		configVars.DisableTracing = true
 	}
 
-	glog.V(2).Info("NGINX level is set to %v",logLevel)
+	glog.V(2).Infof("NGINX level is set to %v", *logLevel)
 
 	converter := nginx.NewConverter(&configVars)
 
@@ -121,7 +125,12 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	client := pilot.NewClient(*discoveryAddress, &http.Client{}, *serviceCluster, serviceNode, podIP,*collectorAddress,*collectorTopic)
+	httpClient, err := ConfigureAuth(*authPolicy)
+	if err != nil {
+		glog.Fatalf("Unable to configure auth: %v", err)
+	}
+
+	client := pilot.NewClient(GetEndpoint(*discoveryAddress, *authPolicy), httpClient, *serviceCluster, serviceNode, podIP, *collectorAddress, *collectorTopic)
 	pilotWatcher := pilot.NewWatcher(client, 5*time.Second)
 	go pilotWatcher.Run(ctx)
 
@@ -188,4 +197,54 @@ func handleSignals(stop chan struct{}) {
 	signal.Notify(sigs, syscall.SIGTERM, syscall.SIGINT)
 	<-sigs
 	close(stop)
+}
+
+// ConfigureAuth sets up appropriate transport config for client
+func ConfigureAuth(authPolicy string) (*http.Client, error) {
+
+	switch authPolicy {
+	// Configures TLS when MTLS is enabled
+	case "MUTUAL_TLS":
+		mTLSConfig, err := tls.LoadX509KeyPair("/etc/certs/cert-chain.pem", "/etc/certs/key.pem")
+		if err != nil {
+			return nil, fmt.Errorf("Couldn't get mtls key and cert: %v", err)
+		}
+
+		rootCAFile, err := ioutil.ReadFile("/etc/certs/root-cert.pem")
+		if err != nil {
+			return nil, fmt.Errorf("Couldn't read root CA: %v", err)
+		}
+
+		rootCA := x509.NewCertPool()
+		ok := rootCA.AppendCertsFromPEM(rootCAFile)
+		if !ok {
+			return nil, fmt.Errorf("Couldn't add root CA to pool")
+		}
+
+		tr := &http.Transport {
+			TLSClientConfig: &tls.Config {
+				Certificates: []tls.Certificate{mTLSConfig},
+				RootCAs: rootCA,
+			},
+		}
+		return &http.Client{Transport: tr}, nil
+	case "NONE":
+		return &http.Client{}, nil
+	default:
+		return nil, fmt.Errorf("Unknown auth policy: %v", authPolicy)
+	}
+}
+
+// GetEndpoint configures protocol and endpoint based on ControlPlaneAuthPolicy
+func GetEndpoint(endpoint, authPolicy string) string {
+	var url string
+	if authPolicy == "MUTUAL_TLS" {
+		url = "https"
+		// Endpoint must have .svc appended to it because certificate is not valid for standard endpoint
+		endpointParts := strings.Split(endpoint, ":")
+		endpoint = fmt.Sprintf("%v.svc:%v", endpointParts[0], endpointParts[1])
+	} else {
+		url = "http"
+	}
+	return fmt.Sprintf("%v://%v", url,  endpoint)
 }
