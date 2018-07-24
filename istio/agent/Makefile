@@ -21,7 +21,7 @@ BUILD_IN_CONTAINER = 0
 
 include modules.mk
 
-DOCKER_RUN = docker run --rm -v $(shell pwd):/go/src/github.com/nginmesh/nginx-istio-agent -w /go/src/github.com/nginmesh/nginx-istio-agent/
+DOCKER_RUN = docker run --rm -v $(shell pwd):/go/src/github.com/nginmesh/nginmesh/istio/agent -w /go/src/github.com/nginmesh/nginmesh/istio/agent/
 GOLANG_CONTAINER = golang:1.9
 
 all: helpers dirs modules agent-oss push push-init-container
