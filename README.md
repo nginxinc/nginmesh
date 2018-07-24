@@ -29,7 +29,7 @@ nginMesh requires installation of Istio first.
     ```
 2. Download nginMesh release 0.7.1:
     ```
-    curl -L https://github.com/nginmesh/nginmesh/releases/download/0.7.1/nginmesh-0.7.1.tar.gz | tar zx
+    curl -L https://github.com/nginxinc/nginmesh/releases/download/v0.7.1/nginmesh-0.7.1.tar.gz | tar zx
     ```
 3. Deploy Istio:
     ```
