@@ -9,7 +9,7 @@ release:	release_tar create_release upload_release
 clean_release: 
 	rm -rf ${RELEASE_DIR}
 
-release_tar:    clean_release
+release_tar:   clean_release
 	mkdir -p ${RELEASE_DIR}/${RELEASE_FILE}
 	cp -r samples ${RELEASE_DIR}/${RELEASE_FILE}
 	cp -r install ${RELEASE_DIR}/${RELEASE_FILE}
@@ -20,28 +20,28 @@ release_tar:    clean_release
 	cd ${RELEASE_DIR};tar -czvf ${RELEASE_FILE}.tar.gz ${RELEASE_FILE}
 
 create_release:
-    github-release release \
-    --user ${USER} \
-    --repo ${REPO} \
-    --tag ${VERSION} \
-    --name "${VERSION}" \
-    --description "[RELEASE NOTE](https://github.com/nginmesh/nginmesh/wiki/v${VERSION})"
+	github-release release \
+	--user ${USER} \
+	--repo ${REPO} \
+	--tag ${VERSION} \
+	--name "${VERSION}" \
+	--description "[RELEASE NOTE](https://github.com/nginmesh/nginmesh/wiki/v${VERSION})"
 
 upload_release:
 	github-release upload \
-    	--user ${USER} \
-    	--repo ${REPO} \
-    	--tag ${VERSION} \
-    	--name "${RELEASE_FILE}.tar.gz" \
-    	--file ${RELEASE_DIR}/${RELEASE_FILE}.tar.gz
+		--user ${USER} \
+		--repo ${REPO} \
+		--tag ${VERSION} \
+		--name "${RELEASE_FILE}.tar.gz" \
+		--file ${RELEASE_DIR}/${RELEASE_FILE}.tar.gz
 
 
 
 delete_release:
-    github-release delete \
-    --user ${USER} \
-    --repo ${REPO} \
-    --tag ${VERSION}
+	github-release delete \
+	--user ${USER} \
+	--repo ${REPO} \
+	--tag ${VERSION}
 
 
 
