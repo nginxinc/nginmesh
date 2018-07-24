@@ -2,7 +2,7 @@
 # generate and install sidecar
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 set -x
-IMAGE_HUB=${1:-docker.io}
+IMAGE_HUB=${1:-nginxinc}
 mkdir -p $SCRIPTDIR/generated
 $SCRIPTDIR/istio/webhook-create-signed-cert.sh \
     --service istio-sidecar-injector \
