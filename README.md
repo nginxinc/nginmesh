@@ -1,3 +1,6 @@
+# Important Project Notice
+This project is no longer under active development. It will be preserved here for the foreseeable future for reference. Please note that the last version released works with Istio 0.7. 
+
 # NGINX Architecture with Istio Service Mesh
 This repository provides an implementation of a NGINX based service mesh (nginMesh).  nginMesh is compatible with Istio.  It leverages NGINX as a sidecar proxy. 
 
