@@ -10,10 +10,17 @@ Please check https://istio.io for a detailed explanation of the service mesh.
 ## Production Status
 The current version of nginMesh is designed to work with Istio release 0.7.1. It should not be used in production environments.  
 
+## Demo
+[Recorded demo](https://www.nginx.com/resources/webinars/istio-the-extensible-service-mesh/) of nginMesh depoyment.
+
 ## Architecture
 The diagram below depicts how an NGINX sidecar proxy is implemented. The sidecar uses the open source version of NGINX compiled with modules for tracing and monitoring.
 
 ![Alt text](/images/nginx_sidecar.png?raw=true "NGINX Sidecar")
+
+The diagram below is an alternative architectural view - 
+
+![Alt text](/images/nginMesh%20architecture%20-%20Lee%20Calcote.png?raw=true "nginMesh Diagram")
 
 To learn more about the sidecar implementation, see [this document](istio/agent).
 
